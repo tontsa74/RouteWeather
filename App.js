@@ -6,7 +6,8 @@ import Map from './components/Map';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Map></Map>
+      <Settings></Settings>
+      {/* <Map></Map> */}
     </View>
   );
 }
