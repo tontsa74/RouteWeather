@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { blue } from 'ansi-colors';
 
-export default class Settings extends React.Component {
+export default class SettingsScreen extends React.Component {
   state= {start: '', destination: ''}
 
   navigate(start, destination) {
@@ -52,6 +51,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 20,
     width: 300,
+    alignSelf: 'center',
   },
   navigateButton: {
     color: 'blue',

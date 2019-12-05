@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions, View, Text } from 'react-native';
 import MapView from 'react-native-maps';
 
-export default class Map extends React.Component {
+export default class MapScreen extends React.Component {
 
   render() {
     return (
