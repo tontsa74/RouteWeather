@@ -13,7 +13,7 @@ export default class MapScreen extends React.Component {
       </View>
     );
   }
- 
+
 }
 
 const styles = StyleSheet.create({

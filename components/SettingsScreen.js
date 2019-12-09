@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import Constants from 'expo-constants';
 
 export default class SettingsScreen extends React.Component {
   state= {start: '', destination: ''}
@@ -30,6 +31,9 @@ export default class SettingsScreen extends React.Component {
               Navigate
             </Text>
         </TouchableOpacity>
+        <Text>
+          {Constants.manifest.android.config.googleMaps.apiKey}
+        </Text>
       </View>
     );
   }
@@ -43,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'flex-start',
     margin: 24,
-    padding: 10,
+    marginTop: Constants.statusBarHeight,
   },
   textInput: {
     borderWidth: 1,
