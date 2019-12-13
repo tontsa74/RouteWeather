@@ -1,15 +1,51 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 
 export default class SettingsScreen extends React.Component {
-  state= {start: '', destination: ''}
+  state= {
+    start: '', 
+    destination: '',
+    location: null,
+    errorMessage: null,
+  };
+
+  componentDidMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  };
 
   navigate(start, destination) {
     console.log(`start: ${start}, destination: ${destination}`)
   }
 
   render() {
+    let text = 'Waiting..';
+    if (this.state.errorMessage) {
+      text = this.state.errorMessage;
+    } else if (this.state.location) {
+      text = JSON.stringify(this.state.location);
+    }
+
     return (
       <View style={styles.container}>
         <TextInput
@@ -32,7 +68,10 @@ export default class SettingsScreen extends React.Component {
             </Text>
         </TouchableOpacity>
         <Text>
-          {Constants.manifest.android.config.googleMaps.apiKey}
+          key: {Constants.manifest.android.config.googleMaps.apiKey}
+        </Text>
+        <Text>
+          {text}
         </Text>
       </View>
     );
