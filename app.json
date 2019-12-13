@@ -3,7 +3,7 @@
     "name": "Route Weather",
     "slug": "RouteWeather",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
+    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android",
@@ -30,7 +30,7 @@
       "package": "fi.tuni.tsilve.routeweather",
       "config": {
         "googleMaps": {
-            "apiKey": "foo"
+          "apiKey": "foo"
         }
       }
     }
