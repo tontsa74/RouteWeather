@@ -1,19 +1,25 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View, Text } from 'react-native';
 import MapView from 'react-native-maps';
+import { useSelector } from 'react-redux';
 
-export default class MapScreen extends React.Component {
+export default function MapScreen() {
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <MapView 
-          style ={styles.mapStyle}
-        />
-      </View>
-    );
-  }
+  const currentLocation = useSelector(state => state.currentLocation);
+  const routeStart = useSelector(state => state.routeStart);
+  const routeDestination = useSelector(state => state.routeDestination);
+  console.log(currentLocation)
+  console.log(routeStart)
+  console.log(routeDestination)
+  
 
+  return (
+    <View style={styles.container}>
+      <MapView 
+        style ={styles.mapStyle}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

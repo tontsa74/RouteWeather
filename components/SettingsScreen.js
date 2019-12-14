@@ -1,82 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import { setCurrentLocation, setRouteStart, setRouteDestination } from '../actions/actions'
+import { useDispatch } from 'react-redux';
 
-export default class SettingsScreen extends React.Component {
-  state= {
-    start: '', 
-    destination: '',
-    location: null,
-    errorMessage: null,
-  };
 
-  componentDidMount() {
+export default function SettingsScreen() {
+  const [start, setStart] = useState('Tampere');
+  const [destination, setDestination] = useState('Kuusamo');
+  const [location, setLocation] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log('SettingsScreen')
+  });
+
+  const getLocation = () => {
     if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
+      setErrorMessage('Oops, this will not work on Sketch in an Android emulator. Try it on your device!')
     } else {
-      this._getLocationAsync();
+      console.log('location')
+      _getLocationAsync();
     }
   }
 
-  _getLocationAsync = async () => {
+  const _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
+      setErrorMessage('Permission to access location was denied')
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    setLocation(location)
+    dispatch(setCurrentLocation(location))
   };
 
-  navigate(start, destination) {
+  const navigate = (start, destination) => {
     console.log(`start: ${start}, destination: ${destination}`)
+    dispatch(setRouteStart(start))
+    dispatch(setRouteDestination(destination))
+
+    getLocation();
   }
 
-  render() {
-    let text = 'Waiting..';
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (this.state.location) {
-      text = JSON.stringify(this.state.location);
-    }
 
-    return (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Start location"
-          onChangeText={(start) => this.setState({start})}
-          value={this.state.start}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Destination location"
-          onChangeText={(destination) => this.setState({destination})}
-          value={this.state.destination}
-        />
-        <TouchableOpacity
-          onPress={() => this.navigate(this.state.start, this.state.destination)}
-          >
-            <Text style={styles.navigateButton}>
-              Navigate
-            </Text>
-        </TouchableOpacity>
-        <Text>
-          key: {Constants.manifest.android.config.googleMaps.apiKey}
-        </Text>
-        <Text>
-          {text}
-        </Text>
-      </View>
-    );
+  let text = 'Waiting..';
+  if (errorMessage) {
+    text = errorMessage;
+  } else if (location) {
+    text = JSON.stringify(location);
   }
- 
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Start location"
+        onChangeText={(start) => setStart({start})}
+        value={start}
+      />
+      <TextInput
+        style={styles.textInput}
+        placeholder="Destination location"
+        onChangeText={(destination) => setDestination({destination})}
+        value={destination}
+      />
+      <TouchableOpacity
+        onPress={() => navigate(start, destination)}
+        >
+          <Text style={styles.navigateButton}>
+            Navigate
+          </Text>
+      </TouchableOpacity>
+      <Text>
+        key: {Constants.manifest.android.config.googleMaps.apiKey}
+      </Text>
+      <Text>
+        {text}
+      </Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
