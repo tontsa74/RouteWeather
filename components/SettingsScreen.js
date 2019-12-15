@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import { setCurrentLocation, setRouteStart, setRouteDestination } from '../actions/actions'
+import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch } from 'react-redux';
 
 

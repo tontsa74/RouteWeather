@@ -1,10 +1,7 @@
 import React from 'react';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import allReducers from './reducers';
 import AppNavigator from './AppNavigator';
-
-const store = createStore(allReducers);
+import { store } from './store/store';
 
 export default function App() {
 
