@@ -1,74 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export default function SettingsScreen() {
-  const [start, setStart] = useState('Tampere');
-  const [destination, setDestination] = useState('Kuusamo');
-  const [location, setLocation] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const routeStart = useSelector(state => state.routeStart);
+  const routeDestination = useSelector(state => state.routeDestination);
+  const location = useSelector(state => state.currentLocation);
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('SettingsScreen')
+    console.log('SettingsScreen: ')
   });
-
-  const getLocation = () => {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      setErrorMessage('Oops, this will not work on Sketch in an Android emulator. Try it on your device!')
-    } else {
-      console.log('location')
-      _getLocationAsync();
-    }
-  }
-
-  const _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      setErrorMessage('Permission to access location was denied')
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation(location)
-    dispatch(setCurrentLocation(location))
-  };
 
   const navigate = (start, destination) => {
     console.log(`start: ${start}, destination: ${destination}`)
-    dispatch(setRouteStart(start))
-    dispatch(setRouteDestination(destination))
 
-    getLocation();
+    dispatch(setCurrentLocation())
   }
 
-
-  let text = 'Waiting..';
-  if (errorMessage) {
-    text = errorMessage;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.textInput}
         placeholder="Start location"
-        onChangeText={(start) => setStart({start})}
-        value={start}
+        onChangeText={(start) => {
+          dispatch(setRouteStart(start))
+        }}
+        value={routeStart}
       />
       <TextInput
         style={styles.textInput}
         placeholder="Destination location"
-        onChangeText={(destination) => setDestination({destination})}
-        value={destination}
+        onChangeText={(destination) => {
+          dispatch(setRouteDestination(destination))
+        }}
+        value={routeDestination}
       />
       <TouchableOpacity
-        onPress={() => navigate(start, destination)}
+        onPress={() => navigate(routeStart, routeDestination)}
         >
           <Text style={styles.navigateButton}>
             Navigate
@@ -78,7 +51,7 @@ export default function SettingsScreen() {
         key: {Constants.manifest.android.config.googleMaps.apiKey}
       </Text>
       <Text>
-        {text}
+        {JSON.stringify(location)}
       </Text>
     </View>
   );

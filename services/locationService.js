@@ -1,31 +1,21 @@
-// import Constants from 'expo-constants';
-// import * as Location from 'expo-location';
-// import * as Permissions from 'expo-permissions';
 
-// export const updateLocation = () => {
-//   console.log('update location')
-//   getLocation()
-// }
+import Constants from 'expo-constants';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 
-// const getLocation = () => {
-//   console.log('getLocation')
-//   if (Platform.OS === 'android' && !Constants.isDevice) {
-//     console.log('Oops, this will not work on Sketch in an Android emulator. Try it on your device!')
-//   } else {
-//     _getLocationAsync();
-//   }
-// }
+export const fetchLocation = async () => {
+  let location;
 
-// const _getLocationAsync = async () => {
-//   console.log('_getLocationAsync')
-//   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-//   if (status !== 'granted') {
-//     setErrorMessage('Permission to access location was denied')
-//   }
+  if (Platform.OS === 'android' && !Constants.isDevice) {
+    throw new Error('Oops, this will not work on Sketch in an Android emulator. Try it on your device!')
+  } else {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      throw new Error('Permission to access location was denied')
+    }
 
-//   let location = await Location.getCurrentPositionAsync({});
-//   //setLocation(location)
-//   //dispatch(setCurrentLocation(location))
+    location = await Location.getCurrentPositionAsync({});
+  }
   
-//   console.log(location)
-// };
+  return location
+}

@@ -1,8 +1,19 @@
-export const setCurrentLocation = (location) => {
+import { fetchLocation } from '../../services/locationService'
+
+export const setCurrentLocationAsync = (location) => {
   return {
     type: 'SET_CURRENT_LOCATION',
     payload: location,
   };
+}
+
+export const setCurrentLocation = () => {
+  return function(dispatch) {
+    dispatch(setCurrentLocationAsync('waiting'))
+    return fetchLocation()
+    .then(loc => dispatch(setCurrentLocationAsync(loc)))
+    .catch(error => console.log(error))
+  }
 }
 
 export const setRouteStart = (location) => {

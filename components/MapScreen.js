@@ -5,12 +5,12 @@ import { useSelector } from 'react-redux';
 
 export default function MapScreen() {
 
-  const currentLocation = useSelector(state => state.currentLocation);
-  const routeStart = useSelector(state => state.routeStart);
-  const routeDestination = useSelector(state => state.routeDestination);
-  console.log(currentLocation)
-  console.log(routeStart)
-  console.log(routeDestination)
+  // const currentLocation = useSelector(state => state.currentLocation);
+  // const routeStart = useSelector(state => state.routeStart);
+  // const routeDestination = useSelector(state => state.routeDestination);
+  // console.log(currentLocation)
+  // console.log(routeStart)
+  // console.log(routeDestination)
   
 
   return (
