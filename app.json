@@ -25,6 +25,7 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "fi.tuni.tsilve.routeweather",
       "config": {
         "googleMapsApiKey": "foo"
       }
