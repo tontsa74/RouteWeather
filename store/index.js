@@ -22,8 +22,8 @@ const store = createStore(
   middleware,
 );
   
-store.subscribe(() => {
-  console.log('store changed: ', store.getState());
-});
+// store.subscribe(() => {
+//   console.log('store changed: ', store.getState());
+// });
 
 export default store;

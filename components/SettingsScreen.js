@@ -3,12 +3,14 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import Constants from 'expo-constants';
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
+import { getRouteLocations } from '../services/apiService';
 
 
 export default function SettingsScreen() {
   const routeStart = useSelector(state => state.routeStart);
   const routeDestination = useSelector(state => state.routeDestination);
   const location = useSelector(state => state.currentLocation);
+  const route = useSelector(state => state.fetchRoute)
   
   const dispatch = useDispatch();
 
@@ -20,6 +22,11 @@ export default function SettingsScreen() {
     console.log(`start: ${start}, destination: ${destination}`)
 
     dispatch(setCurrentLocation())
+  }
+
+  const clicked = () => {
+    console.log('clicked')
+    dispatch(getRouteLocations(routeStart, routeDestination))
   }
 
   return (
@@ -52,6 +59,22 @@ export default function SettingsScreen() {
       </Text>
       <Text>
         {JSON.stringify(location)}
+      </Text>
+      
+      <TouchableOpacity
+        onPress={() => clicked()}
+        >
+        <Text style={styles.navigateButton}>
+          button
+        </Text>
+      </TouchableOpacity>
+      <Text>
+        {`
+        ${route.locations.status}
+        ${route.locations.errorMessage}
+        ${route.loading}
+        `}
+        {JSON.stringify(route)}
       </Text>
     </View>
   );

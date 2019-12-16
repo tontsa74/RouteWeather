@@ -24,13 +24,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "foo"
+      }
     },
     "android": {
       "package": "fi.tuni.tsilve.routeweather",
       "config": {
         "googleMaps": {
-          "apiKey": "foo"
+          "apiKey": "bar"
         }
       }
     }
