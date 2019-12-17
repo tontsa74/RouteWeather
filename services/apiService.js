@@ -1,5 +1,5 @@
 import { fetchData, fetchDataFulfilled, fetchDataRejected } from "../store/actions/actions";
-import Constants from 'expo-constants';
+// import Constants from 'expo-constants';
 
 
 //Define your action creators that will be responsible for asynchronouse operations 
@@ -8,7 +8,8 @@ export const getRouteLocations = (start, destination) => {
   return async dispatch => {
       //Then perform your asynchronous operations.
       try {
-          const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${Constants.manifest.android.config.googleMaps.apiKey}`;
+        const key = 'AIzaSyCL4LP43DYToJPBOVRhSXkLITtlj5Qigig' //Constants.manifest.android.config.googleMaps.apiKey
+          const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${key}`;
           console.log(url)
           //Have it first fetch data from our starwars url.
           const routeLocationsPromise = await fetch(url);

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import Constants from 'expo-constants';
+// import Constants from 'expo-constants';
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import { getRouteLocations } from '../services/apiService';
@@ -55,7 +55,7 @@ export default function SettingsScreen() {
           </Text>
       </TouchableOpacity>
       <Text>
-        key: {Constants.manifest.android.config.googleMaps.apiKey}
+        {/* key: {Constants.manifest.android.config.googleMaps.apiKey} */}
       </Text>
       <Text>
         {JSON.stringify(location)}
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'flex-start',
     margin: 24,
-    marginTop: Constants.statusBarHeight,
+    // marginTop: Constants.statusBarHeight,
   },
   textInput: {
     borderWidth: 1,
