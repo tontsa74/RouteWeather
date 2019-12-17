@@ -30,7 +30,7 @@
       "package": "fi.tuni.tsilve.routeweather",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCL4LP43DYToJPBOVRhSXkLITtlj5Qigig"
+          "apiKey": "bar"
         }
       }
     }
