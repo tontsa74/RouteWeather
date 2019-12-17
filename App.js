@@ -5,7 +5,7 @@ import store from './store';
 import Constants from 'expo-constants';
 
 export default function App() {
-  console.log(Constants)
+  console.log(Constants.manifest.name);
   return (
     <Provider store={store}>
       <AppNavigator/>
