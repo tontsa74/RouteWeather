@@ -1,26 +1,37 @@
 import { fetchData, fetchDataFulfilled, fetchDataRejected } from "../store/actions/actions";
 import { apiKey } from '../apiKey';
+import { RoutePoint } from "../models/RoutePoint";
 
-
-//Define your action creators that will be responsible for asynchronouse operations 
 export const getRouteLocations = (start, destination) => {
-  //IN order to use await your callback must be asynchronous using async keyword.
   return async dispatch => {
-    //Then perform your asynchronous operations.
     try {
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}`;
       console.log(url)
-      //Have it first fetch data from our starwars url.
       const routeLocationsPromise = await fetch(url);
       dispatch(fetchData(true));
-      //Then use the json method to get json data from api/
-      const locations = await routeLocationsPromise.json();
-      //console.log('locations-----------', locations);
-      //Now when the data is retrieved dispatch an action altering redux state.
-      dispatch(fetchDataFulfilled(locations))
+      const locationsJson = await routeLocationsPromise.json();
+      const route = setRoute(locationsJson)
+      dispatch(fetchDataFulfilled(route))
     } catch(error) {
-      console.log('Getting People Error---------', error);
+      console.log('Getting Locations Error---------', error);
       dispatch(fetchDataRejected(error))
     }
   }
+}
+
+const setRoute = (locations) => {
+  console.log('setRoute-------->')
+  let routePoints = []
+  let key = 0
+  locations.routes[0].legs[0].steps.forEach(step => {
+    // console.log('step: ', step)
+    key += 1
+    let latitude = step.end_location.lat
+    let longitude = step.end_location.lng
+    let routePoint = new RoutePoint(`${key}`, latitude, longitude)
+    // console.log('routePoint: ', routePoint)
+    routePoints.push(routePoint)
+  });
+  // console.log('routepoints----------:', routePoints)
+  return routePoints
 }

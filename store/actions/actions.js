@@ -10,7 +10,8 @@ export const setCurrentLocationAsync = (location) => {
 
 export const setCurrentLocation = () => {
   return function(dispatch) {
-    dispatch(setCurrentLocationAsync('waiting'))
+    //dispatch(setCurrentLocationAsync('waiting'))
+    console.log('waiting')
     return fetchLocation()
     .then(loc => dispatch(setCurrentLocationAsync(loc)))
     .catch(error => console.log(error))
