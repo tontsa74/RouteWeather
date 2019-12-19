@@ -4,6 +4,9 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import { getRouteLocations } from '../services/apiService';
+import { Ionicons } from '@expo/vector-icons';
+
+const IconComponent = Ionicons;
 
 
 export default function SettingsScreen() {
@@ -18,20 +21,21 @@ export default function SettingsScreen() {
     console.log('SettingsScreen: ')
   });
 
-  const navigate = (start, destination) => {
-    console.log(`start: ${start}, destination: ${destination}`)
+  const useGPS = () => {
+    console.log('useGPS')
 
     dispatch(setCurrentLocation())
   }
 
-  const clicked = () => {
-    console.log('clicked')
+  const navigate = () => {
+    console.log('navigate')
     dispatch(getRouteLocations(routeStart, routeDestination))
   }
 
   return (
     <View style={styles.container}>
-      <TextInput
+      <View style={styles.locationContainer}>
+        <TextInput
         style={styles.textInput}
         placeholder="Start location"
         onChangeText={(start) => {
@@ -39,41 +43,54 @@ export default function SettingsScreen() {
         }}
         value={routeStart}
       />
-      <TextInput
-        style={styles.textInput}
-        placeholder="Destination location"
-        onChangeText={(destination) => {
-          dispatch(setRouteDestination(destination))
-        }}
-        value={routeDestination}
-      />
       <TouchableOpacity
-        onPress={() => navigate(routeStart, routeDestination)}
+        onPress={() => useGPS()}
+        >
+        <IconComponent 
+        style={styles.gpsButton}
+          name={'md-locate'} 
+          size={40} 
+          color={'blue'} 
+        />
+      </TouchableOpacity>
+      </View>
+
+      <View style={styles.locationContainer}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Destination location"
+          onChangeText={(destination) => {
+            dispatch(setRouteDestination(destination))
+          }}
+          value={routeDestination}
+        />
+        <TouchableOpacity
+          onPress={() => useGPS()}
+          >
+          <IconComponent 
+          style={styles.gpsButton}
+            name={'md-locate'} 
+            size={40} 
+            color={'blue'} 
+          />
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity
+        onPress={() => navigate()}
         >
           <Text style={styles.navigateButton}>
             Navigate
           </Text>
       </TouchableOpacity>
-      <Text>
-        {/* key: {Constants.manifest.android.config.googleMaps.apiKey} */}
-      </Text>
+      
       <Text>
         {JSON.stringify(location)}
       </Text>
-      
-      <TouchableOpacity
-        onPress={() => clicked()}
-        >
-        <Text style={styles.navigateButton}>
-          button
-        </Text>
-      </TouchableOpacity>
       <Text>
         {`
-        ${route.locations.status}
-        ${route.locations.errorMessage}
-        ${route.loading}
-        `}
+        error: ${route.errorMessage}
+        loading: ${route.loading}`}
         {JSON.stringify(route)}
       </Text>
     </View>
@@ -89,13 +106,21 @@ const styles = StyleSheet.create({
     margin: 24,
     // marginTop: Constants.statusBarHeight,
   },
-  textInput: {
+  locationContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: 20,
+    alignItems: 'center',
     borderWidth: 1,
+  },
+  textInput: {
     fontSize: 30,
     padding: 10,
-    marginTop: 20,
     width: 300,
     alignSelf: 'center',
+  },
+  gpsButton: {
+    marginRight: 15,
   },
   navigateButton: {
     color: 'blue',
