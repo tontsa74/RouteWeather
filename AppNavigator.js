@@ -20,14 +20,9 @@ const TabNavigator = createBottomTabNavigator({
       let iconName;
       if (routeName === 'Settings') {
         iconName = `md-settings`;
-        // Sometimes we want to add badges to some icons.
-        // You can check the implementation below.
-        // IconComponent = HomeIconWithBadge;
       } else if (routeName === 'Map') {
         iconName = `md-map`;
       }
-
-      // You can return any component that you like here!
       return <IconComponent name={iconName} size={25} color={tintColor} />;
     },
   }),

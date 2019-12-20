@@ -1,43 +1,60 @@
-import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED } from '../types';
+import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED, SET_CURRENT_LOCATION, SET_ROUTE_START, SET_ROUTE_DESTINATION, SET_CURRENT_REJECTED, SET_CURRENT_LOCATION_FULFILLED } from '../types';
 import { fetchLocation } from '../../services/locationService'
 
-export const setCurrentLocationAsync = (location) => {
-  return {
-    type: 'SET_CURRENT_LOCATION',
-    payload: location,
-  };
-}
-
-export const setCurrentLocation = (sender) => {
+export const setCurrentLocation = () => {
   return function(dispatch) {
-    //dispatch(setCurrentLocationAsync('waiting'))
-    console.log('waiting')
+    dispatch(currentLocation())
     return fetchLocation()
-    .then(loc => dispatch(setCurrentLocationAsync(loc)))
-    .catch(error => console.log(error))
+    .then(loc => dispatch(setCurrentLocationFulfilled(loc)))
+    .catch(error => dispatch(setCurrentLocationRejected(error)))
   }
 }
 
+export const currentLocation = () => {
+  //return a action type and a loading state indicating it is getting data. 
+  return {
+    type: SET_CURRENT_LOCATION,
+    loading: true,
+  }
+}
+
+// Async
+export const setCurrentLocationFulfilled = (location) => {
+  return {
+    type: SET_CURRENT_LOCATION_FULFILLED,
+    payload: location,
+    loading: false,
+  };
+}
+
+export const setCurrentLocationRejected = (error) => {
+  return {
+    type: SET_CURRENT_REJECTED,
+    payload: error,
+    loading: false,
+  };
+} 
+
 export const setRouteStart = (location) => {
   return {
-    type: 'SET_ROUTE_START',
+    type: SET_ROUTE_START,
     payload: location,
   };
 }
 
 export const setRouteDestination = (location) => {
   return {
-    type: 'SET_ROUTE_DESTINATION',
+    type: SET_ROUTE_DESTINATION,
     payload: location,
   };
 }
 
 //Define your action create that set your loading state.
-export const fetchData = (bool) => {
+export const fetchData = () => {
   //return a action type and a loading state indicating it is getting data. 
   return {
     type: GET_LOCATIONS,
-    payload: bool,
+    payload: true,
   }
 }
 

@@ -18,19 +18,17 @@ export default function SettingsScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('SettingsScreen: ')
+    // console.log('SettingsScreen: ')
   });
 
   const useGPS = (sender) => {
-    console.log('useGPS')
-
-    dispatch(setCurrentLocation(sender))
+    // console.log('useGPS')
+    dispatch(setCurrentLocation())
     dispatch(geoCode(sender, location.coords.latitude, location.coords.longitude))
-
   }
 
   const navigate = () => {
-    console.log('navigate')
+    // console.log('navigate')
     dispatch(getRouteLocations(routeStart, routeDestination))
   }
 

@@ -2,7 +2,7 @@ import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED } from '
 
 const initialState = {
   locations: [],
-  loading: true,
+  loading: false,
   errorMessage: '',
 }
 

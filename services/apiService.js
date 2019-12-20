@@ -7,7 +7,7 @@ export const getRouteLocations = (start, destination) => {
     try {
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}&alternatives=true`;
       const routeLocationsPromise = await fetch(url);
-      dispatch(fetchData(true));
+      dispatch(fetchData());
       const locationsJson = await routeLocationsPromise.json();
       const route = setRoute(locationsJson)
       dispatch(fetchDataFulfilled(route))
@@ -50,6 +50,7 @@ export const geoCode = (sender, latitude, longitude) => {
       const geocodePromise = await fetch(url);
       const geocodeJson = await geocodePromise.json();
       const address = geocodeJson.results[0].formatted_address;
+      console.log('geoCode', address)
       switch(sender) {
         case 'start': {
           dispatch(setRouteStart(address));
@@ -60,7 +61,6 @@ export const geoCode = (sender, latitude, longitude) => {
           break;
         }
       }
-      
     } catch(error) {
       console.log(error)
     }

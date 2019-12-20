@@ -15,7 +15,7 @@ export default function MapScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('MapScreen: ')
+    // console.log('MapScreen: ')
   });
   
   const region = {
@@ -52,25 +52,12 @@ export default function MapScreen() {
   }
 
   const getPolyline = (key, coords) => {
-    console.log('getPolyline', key)
     let color
     switch(key) {
-      case 0: {
-        color = 'blue'
-        break;
-      }
-      case 1: {
-        color = 'red'
-        break;
-      }
-      case 2: {
-        color = 'green'
-        break;
-      }
-      default: {
-        color = 'yellow'
-        break;
-      }
+      case 0: { color = 'blue'; break; }
+      case 1: { color = 'red'; break; }
+      case 2: { color = 'green'; break; }
+      default: { color = 'yellow'; break; }
     }
     return (
       <Polyline
