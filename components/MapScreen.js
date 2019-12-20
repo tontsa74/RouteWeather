@@ -27,12 +27,88 @@ export default function MapScreen() {
 
   const getCoords = () => {
     let coords = [];
-    fetchRoute.locations.map((location) => {
-      coords.push(location.coord)
+    fetchRoute.locations.map((route) => {
+      route.map((location) => {
+        coords.push(location.coord)
+      })
     })
     return coords
   }
 
+  const getAllRoutes = () => {
+    let routes = []
+    fetchRoute.locations.map((route, index) => {
+      routes.push(getRoutePolylines(index, route))
+    })
+    return routes
+  }
+  
+  const getRoutePolylines = (key, route) => {
+    let coords = [];
+    route.map((location) => {
+      coords.push(location.coord)
+    })
+    return getPolyline(key, coords)
+  }
+
+  const getPolyline = (key, coords) => {
+    console.log('getPolyline', key)
+    let color
+    switch(key) {
+      case 0: {
+        color = 'blue'
+        break;
+      }
+      case 1: {
+        color = 'red'
+        break;
+      }
+      case 2: {
+        color = 'green'
+        break;
+      }
+      default: {
+        color = 'yellow'
+        break;
+      }
+    }
+    return (
+      <Polyline
+        key={key}
+        coordinates={coords}
+        strokeColor={color}
+        strokeWidth={3}
+      />
+    )
+  }
+
+  const getWeatherMarkers = () => {
+    let allMarkers = [];
+    fetchRoute.locations.map((route) => {
+      allMarkers.push(getRouteMarkers(route))
+    })
+
+    return allMarkers
+  }
+
+  const getRouteMarkers = (route) => {
+    let routeMarkers = []
+    route.map((location) => {
+      routeMarkers.push(getMarker(location.key, location.coord))
+    })
+
+    return routeMarkers
+  }
+
+  const getMarker = (key, coord) => {
+    return (
+      <Marker 
+        key={key} 
+        coordinate={coord}
+        image={require('../assets/test2x.png')}
+      />
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -41,37 +117,27 @@ export default function MapScreen() {
         style ={styles.mapStyle}
         region={region}
       >
-        <Marker
-        coordinate={{
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-        }}>
-          <IconComponent name={'md-radio-button-off'} size={25} color={'blue'} />
-        </Marker>
-      {fetchRoute.locations.map((m, index) =>
-        <Marker 
-        key={index}
-          coordinate={m.coord} 
-          image={require('../assets/test2x.png')}
-        />
-      )}
-      <Polyline
-        coordinates={getCoords()}
-        strokeColor='blue'
-        strokeWidth={5}
-      />
+      <Marker
+      coordinate={{
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      }}>
+        <IconComponent name={'md-radio-button-off'} size={25} color={'blue'} />
+      </Marker>
+      {getWeatherMarkers()}
+      {getAllRoutes()}
       </MapView>
       
       <TouchableOpacity
-          onPress={() => dispatch(setCurrentLocation())}
-          style={styles.gpsButton}
-          >
-          <IconComponent 
-            name={'md-locate'} 
-            size={40} 
-            color={'blue'} 
-          />
-        </TouchableOpacity>
+        onPress={() => dispatch(setCurrentLocation())}
+        style={styles.gpsButton}
+        >
+        <IconComponent 
+          name={'md-locate'} 
+          size={40} 
+          color={'blue'} 
+        />
+      </TouchableOpacity>
     </View>
   );
 }

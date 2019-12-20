@@ -5,7 +5,7 @@ import { RoutePoint } from "../models/RoutePoint";
 export const getRouteLocations = (start, destination) => {
   return async dispatch => {
     try {
-      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}`;
+      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}&alternatives=true`;
       console.log(url)
       const routeLocationsPromise = await fetch(url);
       dispatch(fetchData(true));
@@ -21,17 +21,23 @@ export const getRouteLocations = (start, destination) => {
 
 const setRoute = (locations) => {
   console.log('setRoute-------->')
-  let routePoints = []
+  let routes = []
   let key = 0
-  locations.routes[0].legs[0].steps.forEach(step => {
-    // console.log('step: ', step)
-    key += 1
-    let latitude = step.end_location.lat
-    let longitude = step.end_location.lng
-    let routePoint = new RoutePoint(`${key}`, latitude, longitude)
-    // console.log('routePoint: ', routePoint)
-    routePoints.push(routePoint)
-  });
-  // console.log('routepoints----------:', routePoints)
-  return routePoints
+  locations.routes.forEach(route => {
+    let routePoints = []
+    route.legs[0].steps.forEach(step => {
+      // console.log('step: ', step)
+      key += 1
+      let latitude = step.end_location.lat
+      let longitude = step.end_location.lng
+      let routePoint = new RoutePoint(`${key}`, latitude, longitude)
+      // console.log('routePoint: ', routePoint)
+      routePoints.push(routePoint)
+    });
+    // console.log('routepoints----------:', routePoints)
+    routes.push(routePoints)
+  })
+
+  // console.log('routes----------:', routes)
+  return routes
 }

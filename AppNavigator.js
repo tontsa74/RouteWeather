@@ -43,7 +43,7 @@ const TabNavigator = createBottomTabNavigator({
   tabBarComponent: props => (
     <TabBarComponent {...props} style={{ 
       borderTopColor: '#605F60', 
-      backgroundColor: '#eeeeee', 
+      backgroundColor: '#eeeeee',
     }} />
   ),
 });

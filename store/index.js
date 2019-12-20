@@ -15,7 +15,7 @@ const error = (store) => (next) => (action) => {
   }
 }
 
-const middleware = applyMiddleware(logger, error, thunk);
+const middleware = applyMiddleware(error, thunk);
 
 const store = createStore(
   allReducers,
