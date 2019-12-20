@@ -8,7 +8,7 @@ export const setCurrentLocationAsync = (location) => {
   };
 }
 
-export const setCurrentLocation = () => {
+export const setCurrentLocation = (sender) => {
   return function(dispatch) {
     //dispatch(setCurrentLocationAsync('waiting'))
     console.log('waiting')

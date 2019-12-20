@@ -1,4 +1,4 @@
-import { fetchData, fetchDataFulfilled, fetchDataRejected } from "../store/actions/actions";
+import { fetchData, fetchDataFulfilled, fetchDataRejected, setRouteStart, setRouteDestination } from "../store/actions/actions";
 import { apiKey } from '../apiKey';
 import { RoutePoint } from "../models/RoutePoint";
 
@@ -6,7 +6,6 @@ export const getRouteLocations = (start, destination) => {
   return async dispatch => {
     try {
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}&alternatives=true`;
-      console.log(url)
       const routeLocationsPromise = await fetch(url);
       dispatch(fetchData(true));
       const locationsJson = await routeLocationsPromise.json();
@@ -43,3 +42,27 @@ const setRoute = (locations) => {
 
   return routes
 }
+
+export const geoCode = (sender, latitude, longitude) => {
+  return async dispatch => {
+    try {
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+      const geocodePromise = await fetch(url);
+      const geocodeJson = await geocodePromise.json();
+      const address = geocodeJson.results[0].formatted_address;
+      switch(sender) {
+        case 'start': {
+          dispatch(setRouteStart(address));
+          break;
+        }
+        case 'destination': {
+          dispatch(setRouteDestination(address))
+          break;
+        }
+      }
+      
+    } catch(error) {
+      console.log(error)
+    }
+  }
+} 

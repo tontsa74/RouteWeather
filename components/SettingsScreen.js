@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 // import Constants from 'expo-constants';
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
-import { getRouteLocations } from '../services/apiService';
+import { getRouteLocations, geoCode } from '../services/apiService';
 import { Ionicons } from '@expo/vector-icons';
 
 const IconComponent = Ionicons;
@@ -21,10 +21,12 @@ export default function SettingsScreen() {
     console.log('SettingsScreen: ')
   });
 
-  const useGPS = () => {
+  const useGPS = (sender) => {
     console.log('useGPS')
 
-    dispatch(setCurrentLocation())
+    dispatch(setCurrentLocation(sender))
+    dispatch(geoCode(sender, location.coords.latitude, location.coords.longitude))
+
   }
 
   const navigate = () => {
@@ -44,7 +46,7 @@ export default function SettingsScreen() {
         value={routeStart}
       />
       <TouchableOpacity
-        onPress={() => useGPS()}
+        onPress={() => useGPS('start')}
         >
         <IconComponent 
         style={styles.gpsButton}
@@ -65,7 +67,7 @@ export default function SettingsScreen() {
           value={routeDestination}
         />
         <TouchableOpacity
-          onPress={() => useGPS()}
+          onPress={() => useGPS('destination')}
           >
           <IconComponent 
           style={styles.gpsButton}
