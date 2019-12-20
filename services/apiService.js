@@ -20,24 +20,26 @@ export const getRouteLocations = (start, destination) => {
 }
 
 const setRoute = (locations) => {
-  console.log('setRoute-------->')
+  console.log('setRoute')
   let routes = []
   let key = 0
   locations.routes.forEach(route => {
     let routePoints = []
+    // push route start point
+    let latitude = route.legs[0].steps[0].start_location.lat
+    let longitude = route.legs[0].steps[0].start_location.lng
+    let routePoint = new RoutePoint(`${key}`, latitude, longitude)
+    routePoints.push(routePoint)
+    // push rest of route points
     route.legs[0].steps.forEach(step => {
-      // console.log('step: ', step)
       key += 1
       let latitude = step.end_location.lat
       let longitude = step.end_location.lng
       let routePoint = new RoutePoint(`${key}`, latitude, longitude)
-      // console.log('routePoint: ', routePoint)
       routePoints.push(routePoint)
     });
-    // console.log('routepoints----------:', routePoints)
     routes.push(routePoints)
   })
 
-  // console.log('routes----------:', routes)
   return routes
 }
