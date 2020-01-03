@@ -5,13 +5,11 @@ import { Weather } from "../models/Weather"
 const weatherTimeStep = 3600;
 
 export const getRouteWeather = (locations) => {
-  console.log('getRouteWeather')
   let routeWeathers = []
   let now = Math.floor(Date.now() / 1000)
-  totalDuration = 0
-  duration = 0
+  let totalDuration = 0
+  let duration = 0
   return async dispatch => {
-    console.log('getRouteWeather')
     dispatch(weatherDataClear())
     dispatch(fetchWeatherData())
     locations.routes.forEach(route => {
@@ -35,7 +33,6 @@ export const getRouteWeather = (locations) => {
 export const getWeather = (latitude, longitude, time) => {
   return async dispatch => {
     try {
-      console.log('getWeather')
       const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`
       const weatherPromise = await fetch(url)
       dispatch(fetchWeatherData())
@@ -50,7 +47,6 @@ export const getWeather = (latitude, longitude, time) => {
 }
 
 const setWeather = (weatherJson) => {
-  console.log('setWeather')
   let key = 0
   let weather = new Weather(
     key, 

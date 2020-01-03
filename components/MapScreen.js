@@ -83,8 +83,7 @@ export default function MapScreen() {
   }
 
   const getMarker = (key, coord, time, icon) => {
-    let t = new Date();
-    t.setSeconds(time);
+    let t = new Date(time*1000);
     
     let iconImage
     switch(icon) {
@@ -103,7 +102,6 @@ export default function MapScreen() {
       case 'tornado': { iconImage = icon_tornado; break; }
       default: iconImage = icon_default;
     }
-
     return (
       <Marker 
         key={key} 

@@ -21,10 +21,8 @@ export const getRouteLocations = (start, destination) => {
 }
 
 const setRoute = (dispatch, locations) => {
-  console.log('setRoute')
   let routes = []
   let key = 0
-  // let now = Math.floor(Date.now() / 1000)
 
   locations.routes.forEach(route => {
     let routePoints = []
