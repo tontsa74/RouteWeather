@@ -10,9 +10,9 @@ export const getRouteLocations = (start, destination) => {
       const routeLocationsPromise = await fetch(url);
       dispatch(fetchData());
       const locationsJson = await routeLocationsPromise.json();
-      const route = setRoute(dispatch, locationsJson)
-      dispatch(fetchDataFulfilled(route))
-      dispatch(getRouteWeather(locationsJson))
+      const routes = setRoutes(dispatch, locationsJson)
+      dispatch(fetchDataFulfilled(routes))
+      dispatch(getRouteWeather(routes))
     } catch(error) {
       console.log('Getting Locations Error---------', error);
       dispatch(fetchDataRejected(error))
@@ -20,7 +20,7 @@ export const getRouteLocations = (start, destination) => {
   }
 }
 
-const setRoute = (dispatch, locations) => {
+const setRoutes = (dispatch, locations) => {
   let routes = []
   let key = 0
 

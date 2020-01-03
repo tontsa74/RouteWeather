@@ -36,8 +36,8 @@ export default function MapScreen() {
   const region = {
     latitude: currentLocation.coords.latitude,
     longitude: currentLocation.coords.longitude,
-    latitudeDelta: 1,
-    longitudeDelta: 1
+    latitudeDelta: 10,
+    longitudeDelta: 10,
   }
 
   const getAllRoutes = () => {

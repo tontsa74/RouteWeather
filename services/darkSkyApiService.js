@@ -4,7 +4,7 @@ import { Weather } from "../models/Weather"
 
 const weatherTimeStep = 3600;
 
-export const getRouteWeather = (locations) => {
+export const getRouteWeather = (routes) => {
   let routeWeathers = []
   let now = Math.floor(Date.now() / 1000)
   let totalDuration = 0
@@ -12,15 +12,15 @@ export const getRouteWeather = (locations) => {
   return async dispatch => {
     dispatch(weatherDataClear())
     dispatch(fetchWeatherData())
-    locations.routes.forEach(route => {
+    routes.forEach(route => {
       totalDuration = 0
-      route.legs[0].steps.forEach(step => {
-        if (step.duration.value > 0) {
-          totalDuration += step.duration.value
-          duration += step.duration.value
+      route.forEach(point => {
+        if (point.duration > 0) {
+          totalDuration += point.duration
+          duration += point.duration
           if (duration >= weatherTimeStep) {
-            let latitude = step.end_location.lat
-            let longitude = step.end_location.lng
+            let latitude = point.coord.latitude
+            let longitude = point.coord.longitude
             dispatch(getWeather(latitude, longitude, now + totalDuration))
             duration = 0
           }
