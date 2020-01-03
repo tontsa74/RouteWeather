@@ -14,6 +14,7 @@ export default function SettingsScreen() {
   const routeDestination = useSelector(state => state.routeDestination);
   const location = useSelector(state => state.currentLocation);
   const route = useSelector(state => state.fetchRoute)
+  const weather = useSelector(state => state.fetchWeather)
   
   const dispatch = useDispatch();
 
@@ -89,9 +90,9 @@ export default function SettingsScreen() {
       </Text>
       <Text>
         {`
-        error: ${route.errorMessage}
-        loading: ${route.loading}`}
-        {JSON.stringify(route)}
+        error: ${weather.errorMessage}
+        loading: ${weather.loading}`}
+        {JSON.stringify(weather)}
       </Text>
     </View>
   );

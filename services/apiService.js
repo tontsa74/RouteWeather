@@ -1,6 +1,7 @@
 import { fetchData, fetchDataFulfilled, fetchDataRejected, setRouteStart, setRouteDestination } from "../store/actions/actions";
 import { apiKey } from '../apiKey';
 import { RoutePoint } from "../models/RoutePoint";
+import { getWeather, getRouteWeather } from "./darkSkyApiService";
 
 export const getRouteLocations = (start, destination) => {
   return async dispatch => {
@@ -9,8 +10,9 @@ export const getRouteLocations = (start, destination) => {
       const routeLocationsPromise = await fetch(url);
       dispatch(fetchData());
       const locationsJson = await routeLocationsPromise.json();
-      const route = setRoute(locationsJson)
+      const route = setRoute(dispatch, locationsJson)
       dispatch(fetchDataFulfilled(route))
+      dispatch(getRouteWeather(locationsJson))
     } catch(error) {
       console.log('Getting Locations Error---------', error);
       dispatch(fetchDataRejected(error))
@@ -18,23 +20,27 @@ export const getRouteLocations = (start, destination) => {
   }
 }
 
-const setRoute = (locations) => {
+const setRoute = (dispatch, locations) => {
   console.log('setRoute')
   let routes = []
   let key = 0
+  // let now = Math.floor(Date.now() / 1000)
+
   locations.routes.forEach(route => {
     let routePoints = []
     // push route start point
     let latitude = route.legs[0].steps[0].start_location.lat
     let longitude = route.legs[0].steps[0].start_location.lng
     let routePoint = new RoutePoint(`${key}`, latitude, longitude)
+    // dispatch(getWeather(latitude, longitude, now))
     routePoints.push(routePoint)
     // push rest of route points
     route.legs[0].steps.forEach(step => {
       key += 1
       let latitude = step.end_location.lat
       let longitude = step.end_location.lng
-      let routePoint = new RoutePoint(`${key}`, latitude, longitude)
+      let duration = step.duration.value
+      let routePoint = new RoutePoint(`${key}`, latitude, longitude, duration)
       routePoints.push(routePoint)
     });
     routes.push(routePoints)

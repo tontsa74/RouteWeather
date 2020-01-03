@@ -1,16 +1,31 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Dimensions, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, View, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
-import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
+import { setCurrentLocation } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
 
 const IconComponent = Ionicons;
+const icon_default = require('../assets/icon.png')
+const icon_cloudy = require('../assets/icons/cloudy.png')
+const icon_day_clear = require('../assets/icons/day_clear.png')
+const icon_day_partial_cloud = require('../assets/icons/day_partial_cloud.png')
+const icon_fog = require('../assets/icons/fog.png')
+const icon_night_half_moon_clear = require('../assets/icons/night_half_moon_clear.png')
+const icon_night_half_moon_partial_cloud = require('../assets/icons/night_half_moon_partial_cloud.png')
+const icon_rain = require('../assets/icons/rain.png')
+const icon_sleet = require('../assets/icons/sleet.png')
+const icon_snow = require('../assets/icons/snow.png')
+const icon_snow_thunder = require('../assets/icons/snow_thunder.png')
+const icon_thunder = require('../assets/icons/thunder.png')
+const icon_tornado = require('../assets/icons/tornado.png')
+const icon_wind = require('../assets/icons/wind.png')
 
 export default function MapScreen() {
 
   const currentLocation = useSelector(state => state.currentLocation);
   const fetchRoute = useSelector(state => state.fetchRoute);
+  const fetchWeather = useSelector(state => state.fetchWeather);
   
   const dispatch = useDispatch();
 
@@ -23,16 +38,6 @@ export default function MapScreen() {
     longitude: currentLocation.coords.longitude,
     latitudeDelta: 1,
     longitudeDelta: 1
-  }
-
-  const getCoords = () => {
-    let coords = [];
-    fetchRoute.locations.map((route) => {
-      route.map((location) => {
-        coords.push(location.coord)
-      })
-    })
-    return coords
   }
 
   const getAllRoutes = () => {
@@ -69,38 +74,53 @@ export default function MapScreen() {
     )
   }
 
-  const getWeatherMarkers = () => {
-    let allMarkers = [];
-    fetchRoute.locations.map((route) => {
-      allMarkers.push(getRouteMarkers(route))
+  const getWeather = () => {
+    let weathers = []
+    fetchWeather.weathers.map((weather, index) => {
+      weathers.push(getMarker(index, {latitude: weather.latitude, longitude: weather.longitude}, weather.time, weather.icon))
     })
-
-    return allMarkers
+    return weathers
   }
 
-  const getRouteMarkers = (route) => {
-    let routeMarkers = []
-    route.map((location) => {
-      routeMarkers.push(getMarker(location.key, location.coord))
-    })
+  const getMarker = (key, coord, time, icon) => {
+    let t = new Date();
+    t.setSeconds(time);
+    
+    let iconImage
+    switch(icon) {
+      case 'rain': { iconImage = icon_rain; break; }
+      case 'cloudy': { iconImage = icon_cloudy; break; }
+      case 'clear-day': { iconImage = icon_day_clear; break; }
+      case 'clear-night': { iconImage = icon_night_half_moon_clear; break; }
+      case 'snow': { iconImage = icon_snow; break; }
+      case 'sleet': { iconImage = icon_sleet; break; }
+      case 'wind': { iconImage = icon_wind; break; }
+      case 'fog': { iconImage = icon_fog; break; }
+      case 'partly-cloudy-day': { iconImage = icon_day_partial_cloud; break; }
+      case 'partly-cloudy-night': { iconImage = icon_night_half_moon_partial_cloud; break; }
+      case 'hail': { iconImage = icon_snow_thunder; break; }
+      case 'thunderstorm': { iconImage = icon_thunder; break; }
+      case 'tornado': { iconImage = icon_tornado; break; }
+      default: iconImage = icon_default;
+    }
 
-    return routeMarkers
-  }
-
-  const getMarker = (key, coord) => {
     return (
       <Marker 
         key={key} 
+        title={t.toLocaleTimeString()}
+        description={icon}
         coordinate={coord}
-        image={require('../assets/test2x.png')}
-      />
+        anchor={{x: 0.5, y: 0.5}}
+        image={iconImage}
+      >
+      </Marker>
     )
   }
 
   return (
     <View style={styles.container}>
       <MapView 
-        provider={MapView.PROVIDER_GOOGLE}
+        // provider={MapView.PROVIDER_GOOGLE}
         style ={styles.mapStyle}
         region={region}
       >
@@ -111,7 +131,7 @@ export default function MapScreen() {
       }}>
         <IconComponent name={'md-radio-button-off'} size={25} color={'blue'} />
       </Marker>
-      {getWeatherMarkers()}
+      {getWeather()}
       {getAllRoutes()}
       </MapView>
       
