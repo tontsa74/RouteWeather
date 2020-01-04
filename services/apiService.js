@@ -1,63 +1,21 @@
 import { fetchData, fetchDataFulfilled, fetchDataRejected, setRouteStart, setRouteDestination } from "../store/actions/actions";
 import { apiKey } from '../apiKey';
-import { RoutePoint } from "../models/RoutePoint";
-import { getWeather, getRouteWeather } from "./darkSkyApiService";
-import { RouteLeg } from "../models/RouteLeg";
-import { Coord } from "../models/Coord";
+import { getRouteWeather } from "./darkSkyApiService";
 
 export const getRouteLocations = (start, destination) => {
   return async dispatch => {
     try {
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}&alternatives=true`;
-      const routeLocationsPromise = await fetch(url);
+      const directionsPromise = await fetch(url);
       dispatch(fetchData());
-      const locationsJson = await routeLocationsPromise.json();
-      const routes = setRoutes(dispatch, locationsJson)
-      dispatch(fetchDataFulfilled(routes))
-      dispatch(getRouteWeather(routes))
+      const directionsJson = await directionsPromise.json();
+      dispatch(fetchDataFulfilled(directionsJson.routes))
+      dispatch(getRouteWeather(directionsJson.routes))
     } catch(error) {
       console.log('Getting Locations Error---------', error);
       dispatch(fetchDataRejected(error))
     }
   }
-}
-
-const setRoutes = (dispatch, locations) => {
-  let legs = []
-  let key = 0
-
-  locations.routes.forEach(route => {
-
-    let steps = []
-    let routePoints = []
-    // push route start point
-    let latitude = route.legs[0].steps[0].start_location.lat
-    let longitude = route.legs[0].steps[0].start_location.lng
-    let routePoint = new RoutePoint(`${key}`, latitude, longitude)
-    // dispatch(getWeather(latitude, longitude, now))
-    routePoints.push(routePoint)
-    // push rest of route points
-    route.legs[0].steps.forEach(step => {
-      key += 1
-      let latitude = step.end_location.lat
-      let longitude = step.end_location.lng
-      let duration = step.duration.value
-      let routePoint = new RoutePoint(`${key}`, latitude, longitude, duration)
-      routePoints.push(routePoint)
-    });
-    // steps.push(routePoints)
-    let leg = new RouteLeg(
-      key, 
-      route.legs[0].distance.text,
-      route.legs[0].duration.text,
-      new Coord(route.legs[0].end_location.lat, route.legs[0].end_location.lng),
-      new Coord(route.legs[0].start_location.lat, route.legs[0].start_location.lng),
-      routePoints
-    )
-    legs.push(leg)
-  })
-
-  return legs
 }
 
 export const geoCode = (sender, latitude, longitude) => {

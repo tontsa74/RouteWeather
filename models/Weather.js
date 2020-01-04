@@ -1,8 +1,7 @@
 export class Weather {
-  constructor(key, latitude, longitude, time, icon) {
+  constructor(key, coord, time, icon) {
     this.key = key;
-    this.latitude = latitude;
-    this.longitude = longitude;
+    this.coord = coord;
     this.time = time;
     this.icon = icon;
   }

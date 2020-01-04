@@ -1,13 +1,10 @@
 import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED } from '../types';
 
 const initialState = {
-  legs: [],
-  locations: [],
+  routes: [],
   loading: false,
   errorMessage: '',
 }
-
-
 
 const fetchRouteReducer = (state = initialState, action) => {
   switch(action.type) {
@@ -19,8 +16,9 @@ const fetchRouteReducer = (state = initialState, action) => {
     case GET_LOCATIONS_FULFILLED:
       return {
         ...state,
-        locations: action.payload,
+        routes: action.payload,
         loading: action.loading,
+        errorMessage: '',
       };
     case GET_LOCATIONS_REJECTED:
       return {

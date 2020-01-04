@@ -4,6 +4,7 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { setCurrentLocation } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
+import { Coord } from '../models/Coord';
 
 const IconComponent = Ionicons;
 const icon_default = require('../assets/icon.png')
@@ -42,8 +43,7 @@ export default function MapScreen() {
 
   const getRouteTexts = () => {
     let texts = []
-    fetchRoute.locations.map((route, index) => {
-      console.log('leg', route.distance)
+    fetchRoute.routes.map((route, index) => {
       texts.push(getRouteText(index, route))
     })
     return texts
@@ -62,28 +62,39 @@ export default function MapScreen() {
         style={{color: color,}} 
         key={key}
         >
-        {`${route.distance}, ${route.duration}`}
+        {`${route.legs[0].distance.text},\t${route.legs[0].duration.text}`}
       </Text>
     )
   }
 
   const getAllRoutes = () => {
     let routes = []
-    fetchRoute.locations.map((route, index) => {
-      routes.push(getRoutePolylines(index, route.routePoints))
+    fetchRoute.routes.map((route, index) => {
+      routes.push(getRoutePolylines(index, route.legs[0].steps))
     })
     return routes
   }
   
-  const getRoutePolylines = (key, route) => {
+  const getRoutePolylines = (key, steps) => {
     let coords = [];
-    route.map((location) => {
-      coords.push(location.coord)
+    steps.map((step, index) => {
+      if (index == 0) {
+        let coord = new Coord(
+          step.start_location.lat,
+          step.start_location.lng,
+        )
+        coords.push(coord)
+      }
+      let coord = new Coord(
+        step.end_location.lat,
+        step.end_location.lng,
+      )
+      coords.push(coord)
     })
-    return getPolyline(key, coords)
+    return routePolyline(key, coords)
   }
 
-  const getPolyline = (key, coords) => {
+  const routePolyline = (key, coords) => {
     let color
     switch(key) {
       case 0: { color = 'blue'; break; }
@@ -104,13 +115,23 @@ export default function MapScreen() {
   const getWeather = () => {
     let weathers = []
     fetchWeather.weathers.map((weather, index) => {
-      weathers.push(getMarker(index, {latitude: weather.latitude, longitude: weather.longitude}, weather.time, weather.icon))
+      weathers.push(weatherMarker(index, weather))
     })
     return weathers
   }
 
-  const getMarker = (key, coord, time, icon) => {
-    let t = new Date(time*1000);
+  const weatherMarker = (key, weather) => {
+    let time = new Date(weather.time*1000);
+    let icon = weather.icon;
+    let coord = weather.coord;
+    let anchor;
+
+    switch(weather.key) {
+      case 0: { anchor = {x: 0.5, y: 1}; break; }
+      case 1: { anchor = {x: 0, y: 0.5}; break; }
+      case 2: { anchor = {x: 0.5, y: 0}; break; }
+      default: { anchor = {x: 0.5, y: 0.5}; break; }
+    }
     
     let iconImage
     switch(icon) {
@@ -132,10 +153,10 @@ export default function MapScreen() {
     return (
       <Marker 
         key={key} 
-        title={t.toLocaleTimeString()}
+        title={time.toLocaleTimeString()}
         description={icon}
         coordinate={coord}
-        anchor={{x: 0.5, y: 0.5}}
+        anchor={anchor}
         image={iconImage}
       >
       </Marker>
