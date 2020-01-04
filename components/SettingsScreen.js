@@ -5,6 +5,7 @@ import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store
 import { useDispatch, useSelector } from 'react-redux';
 import { getRouteLocations, geoCode } from '../services/apiService';
 import { Ionicons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const IconComponent = Ionicons;
 
@@ -90,10 +91,27 @@ export default function SettingsScreen() {
       </Text>
       <Text>
         {`
+        error: ${route.errorMessage}
+        loading: ${route.loading}`}
+      </Text>
+      
+      <ScrollView>
+        <Text>
+          {JSON.stringify(route)}
+        </Text>
+      </ScrollView>
+      
+      <Text>
+        {`
         error: ${weather.errorMessage}
         loading: ${weather.loading}`}
-        {JSON.stringify(weather)}
       </Text>
+      
+      <ScrollView>
+        <Text>
+          {JSON.stringify(weather)}
+        </Text>
+      </ScrollView>
     </View>
   );
 }
