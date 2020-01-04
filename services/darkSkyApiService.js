@@ -26,6 +26,12 @@ export const getRouteWeather = (routes) => {
         if (value > 0) {
           totalDuration += value
           duration += value
+          if (duration >= weatherTimeStep * 2) {
+            let latitude = (step.start_location.lat + step.end_location.lat) / 2
+            let longitude = (step.start_location.lng + step.end_location.lng) / 2
+            let time = Math.floor(now + totalDuration - (duration / 2))
+            dispatch(getWeather(routeIndex, latitude, longitude, time))
+          }
           if (duration >= weatherTimeStep || index == lastIndex) {
             let latitude = step.end_location.lat
             let longitude = step.end_location.lng
@@ -34,14 +40,12 @@ export const getRouteWeather = (routes) => {
           }
         }
       })
-      // let endLatitude = route.legs[index].end_location.lat
-      // let endLongitude = route.legs[index].end_location.lng
-      // dispatch(getWeather(index, endLatitude, endLongitude, now))
     });
   }
 }
 
 export const getWeather = (index, latitude, longitude, time) => {
+  console.log('time', time)
   return async dispatch => {
     try {
       const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`

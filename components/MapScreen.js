@@ -124,14 +124,14 @@ export default function MapScreen() {
     let time = new Date(weather.time*1000);
     let icon = weather.icon;
     let coord = weather.coord;
-    let anchor;
+    let anchor = { x: 0.5, y: 0.5 }
 
-    switch(weather.key) {
+/*     switch(weather.key) {
       case 0: { anchor = {x: 0.5, y: 1}; break; }
       case 1: { anchor = {x: 0, y: 0.5}; break; }
       case 2: { anchor = {x: 0.5, y: 0}; break; }
       default: { anchor = {x: 0.5, y: 0.5}; break; }
-    }
+    } */
     
     let iconImage
     switch(icon) {
@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 30,
     left: 10,
-    backgroundColor: '#55555522'
+    backgroundColor: '#88888844',
+    padding: 5,
   }
 });
