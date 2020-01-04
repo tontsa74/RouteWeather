@@ -1,6 +1,7 @@
 import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED } from '../types';
 
 const initialState = {
+  legs: [],
   locations: [],
   loading: false,
   errorMessage: '',

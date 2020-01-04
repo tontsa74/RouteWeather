@@ -2,6 +2,8 @@ import { fetchData, fetchDataFulfilled, fetchDataRejected, setRouteStart, setRou
 import { apiKey } from '../apiKey';
 import { RoutePoint } from "../models/RoutePoint";
 import { getWeather, getRouteWeather } from "./darkSkyApiService";
+import { RouteLeg } from "../models/RouteLeg";
+import { Coord } from "../models/Coord";
 
 export const getRouteLocations = (start, destination) => {
   return async dispatch => {
@@ -21,10 +23,12 @@ export const getRouteLocations = (start, destination) => {
 }
 
 const setRoutes = (dispatch, locations) => {
-  let routes = []
+  let legs = []
   let key = 0
 
   locations.routes.forEach(route => {
+
+    let steps = []
     let routePoints = []
     // push route start point
     let latitude = route.legs[0].steps[0].start_location.lat
@@ -41,10 +45,19 @@ const setRoutes = (dispatch, locations) => {
       let routePoint = new RoutePoint(`${key}`, latitude, longitude, duration)
       routePoints.push(routePoint)
     });
-    routes.push(routePoints)
+    // steps.push(routePoints)
+    let leg = new RouteLeg(
+      key, 
+      route.legs[0].distance.text,
+      route.legs[0].duration.text,
+      new Coord(route.legs[0].end_location.lat, route.legs[0].end_location.lng),
+      new Coord(route.legs[0].start_location.lat, route.legs[0].start_location.lng),
+      routePoints
+    )
+    legs.push(leg)
   })
 
-  return routes
+  return legs
 }
 
 export const geoCode = (sender, latitude, longitude) => {

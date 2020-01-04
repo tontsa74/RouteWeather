@@ -14,7 +14,7 @@ export const getRouteWeather = (routes) => {
     dispatch(fetchWeatherData())
     routes.forEach(route => {
       totalDuration = 0
-      route.forEach(point => {
+      route.routePoints.forEach(point => {
         if (point.duration > 0) {
           totalDuration += point.duration
           duration += point.duration

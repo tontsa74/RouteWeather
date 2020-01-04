@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, View, TouchableOpacity, Text } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { setCurrentLocation } from '../store/actions/actions'
@@ -40,10 +40,37 @@ export default function MapScreen() {
     longitudeDelta: 10,
   }
 
+  const getRouteTexts = () => {
+    let texts = []
+    fetchRoute.locations.map((route, index) => {
+      console.log('leg', route.distance)
+      texts.push(getRouteText(index, route))
+    })
+    return texts
+  }
+
+  const getRouteText = (key, route) => {
+    let color
+    switch(key) {
+      case 0: { color = 'blue'; break; }
+      case 1: { color = 'red'; break; }
+      case 2: { color = 'green'; break; }
+      default: { color = 'yellow'; break; }
+    }
+    return (
+      <Text 
+        style={{color: color,}} 
+        key={key}
+        >
+        {`${route.distance}, ${route.duration}`}
+      </Text>
+    )
+  }
+
   const getAllRoutes = () => {
     let routes = []
     fetchRoute.locations.map((route, index) => {
-      routes.push(getRoutePolylines(index, route))
+      routes.push(getRoutePolylines(index, route.routePoints))
     })
     return routes
   }
@@ -143,6 +170,8 @@ export default function MapScreen() {
           color={'blue'} 
         />
       </TouchableOpacity>
+
+      <View style={styles.routes}>{getRouteTexts()}</View>
     </View>
   );
 }
@@ -162,5 +191,11 @@ const styles = StyleSheet.create({
     position:'absolute',
     top: 50,
     right: 25,
+  },
+  routes: {
+    position: 'absolute',
+    top: 30,
+    left: 10,
+    backgroundColor: '#55555522'
   }
 });
