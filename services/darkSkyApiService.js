@@ -45,7 +45,6 @@ export const getRouteWeather = (routes) => {
 }
 
 export const getWeather = (index, latitude, longitude, time) => {
-  console.log('time', time)
   return async dispatch => {
     try {
       const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`

@@ -10,7 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 const IconComponent = Ionicons;
 
 
-export default function SettingsScreen() {
+export default function SettingsScreen(props) {
   const routeStart = useSelector(state => state.routeStart);
   const routeDestination = useSelector(state => state.routeDestination);
   const location = useSelector(state => state.currentLocation);
@@ -20,7 +20,7 @@ export default function SettingsScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log('SettingsScreen: ')
+    // console.log('SettingsScreen: ', props)
   });
 
   const useGPS = (sender) => {
@@ -30,8 +30,9 @@ export default function SettingsScreen() {
   }
 
   const navigate = () => {
-    // console.log('navigate')
+    // console.log('navigate', props)
     dispatch(getRouteLocations(routeStart, routeDestination))
+    props.navigation.navigate('Map')
   }
 
   return (
