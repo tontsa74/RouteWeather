@@ -4,6 +4,10 @@ import { Weather } from "../models/Weather"
 import { Coord } from "../models/Coord";
 
 const weatherTimeStep = 3600;
+const weatherCoordAccuracy = 0.1;
+const weatherTimeAccuracy = 900;
+
+let fetchWeather = [];
 
 export const getRouteWeather = (routes) => {
   let now = Math.floor(Date.now() / 1000)
@@ -71,4 +75,27 @@ const setWeather = (index, weatherJson) => {
     weatherJson.currently.icon,
   )
   return weather
+}
+
+const findWeather = (latitude, longitude, time) => {
+  if (fetchWeather.length > 0) {
+    fetchWeather.forEach(weather => {
+    if (
+      +(latitude - weather.coord.latitude) <  weatherCoordAccuracy &&
+      +(longitude - weather.coord.longitude) <  weatherCoordAccuracy &&
+      +(time - weather.time) < weatherTimeAccuracy) {
+        console.log('found')
+      }
+    })
+  }
+
+  let weather = new Weather(
+    0, 
+    new Coord(
+      latitude, 
+      longitude, 
+    ),
+    time,
+  )
+  fetchWeather.push(weather)
 }
