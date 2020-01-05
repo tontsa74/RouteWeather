@@ -7,7 +7,6 @@ export const setCurrentLocation = () => {
     return fetchLocation()
     .then(loc => {
       dispatch(setCurrentLocationFulfilled(loc))
-      console.log('loc', loc);
       let region = {
         latitude: loc.coords.latitude,
         longitude: loc.coords.longitude,
@@ -15,7 +14,6 @@ export const setCurrentLocation = () => {
         longitudeDelta: loc.coords.accuracy * 0.01,
       }
       dispatch(setMapRegion(region))
-      console.log('region', region)
     })
     .catch(error => dispatch(setCurrentLocationRejected(error)))
   }

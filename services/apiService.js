@@ -47,7 +47,6 @@ const setRegion = (routes) => {
     latitudeDelta: latitudeDelta,
     longitudeDelta: longitudeDelta,
   }
-  console.log('setMapRegion', region)
   return region
 }
 
