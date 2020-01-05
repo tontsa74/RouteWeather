@@ -27,6 +27,7 @@ export default function MapScreen() {
   const currentLocation = useSelector(state => state.currentLocation);
   const fetchRoute = useSelector(state => state.fetchRoute);
   const fetchWeather = useSelector(state => state.fetchWeather);
+  const mapRegion = useSelector(state => state.mapRegion);
   
   const dispatch = useDispatch();
 
@@ -34,12 +35,12 @@ export default function MapScreen() {
     // console.log('MapScreen: ')
   });
   
-  const region = {
-    latitude: currentLocation.coords.latitude,
-    longitude: currentLocation.coords.longitude,
-    latitudeDelta: 10,
-    longitudeDelta: 10,
-  }
+  // const region = {
+  //   latitude: currentLocation.coords.latitude,
+  //   longitude: currentLocation.coords.longitude,
+  //   latitudeDelta: 10,
+  //   longitudeDelta: 10,
+  // }
 
   const getRouteTexts = () => {
     let texts = []
@@ -168,7 +169,7 @@ export default function MapScreen() {
       <MapView 
         // provider={MapView.PROVIDER_GOOGLE}
         style ={styles.mapStyle}
-        region={region}
+        region={mapRegion.region}
       >
       <Marker
       coordinate={{

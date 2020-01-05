@@ -25,3 +25,5 @@ export const GET_WEATHER_CLEAR = 'GET_WEATHER_CLEAR';
 export const GET_WEATHER_FULFILLED = 'GET_WEATHER_FULFILLED';
 //When there is a error return an error action type. 
 export const GET_WEATHER_REJECTED = 'GET_WEATHER_REJECTED';
+
+export const SET_MAP_REGION = 'SET_MAP_REGION';

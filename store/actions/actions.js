@@ -1,11 +1,22 @@
-import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED, SET_CURRENT_LOCATION, SET_ROUTE_START, SET_ROUTE_DESTINATION, SET_CURRENT_REJECTED, SET_CURRENT_LOCATION_FULFILLED } from '../types';
+import { GET_LOCATIONS, GET_LOCATIONS_FULFILLED, GET_LOCATIONS_REJECTED, SET_CURRENT_LOCATION, SET_ROUTE_START, SET_ROUTE_DESTINATION, SET_CURRENT_REJECTED, SET_CURRENT_LOCATION_FULFILLED, SET_MAP_REGION } from '../types';
 import { fetchLocation } from '../../services/locationService'
 
 export const setCurrentLocation = () => {
   return function(dispatch) {
     dispatch(currentLocation())
     return fetchLocation()
-    .then(loc => dispatch(setCurrentLocationFulfilled(loc)))
+    .then(loc => {
+      dispatch(setCurrentLocationFulfilled(loc))
+      console.log('loc', loc);
+      let region = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        latitudeDelta: loc.coords.accuracy * 0.01,
+        longitudeDelta: loc.coords.accuracy * 0.01,
+      }
+      dispatch(setMapRegion(region))
+      console.log('region', region)
+    })
     .catch(error => dispatch(setCurrentLocationRejected(error)))
   }
 }
@@ -75,5 +86,12 @@ export const fetchDataRejected = (error) => {
       type: GET_LOCATIONS_REJECTED,
       payload: error,
       loading: false,
+  };
+}
+
+export const setMapRegion = (region) => {
+  return {
+    type: SET_MAP_REGION,
+    payload: region,
   };
 }
