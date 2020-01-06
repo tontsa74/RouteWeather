@@ -9,7 +9,61 @@ const weatherTimeAccuracy = 900;
 
 let fetchWeather = [];
 
+let totalFetch = 0;
+let maxFetch = 32;
+
 export const getRouteWeather = (routes) => {
+  let now = Math.floor(Date.now() / 1000)
+  console.log('now', now)
+  let totalDuration = 0
+  let duration = 0
+  return async dispatch => {
+    dispatch(weatherDataClear())
+    dispatch(fetchWeatherData())
+    routes.forEach((route, index) => {
+      let routeIndex = index;
+      totalDuration = 0
+      duration = 0
+      if (routeIndex == 0) {
+        let latitude = route.legs[0].start_location.lat
+        let longitude = route.legs[0].start_location.lng
+        dispatch(getWeather(routeIndex, latitude, longitude, now))
+      }
+      let firstTime = new Date((now + 1800) * 1000).setMinutes(0,0,0) / 1000
+      
+      let lastIndex = route.legs[0].steps.length-1
+      route.legs[0].steps.forEach((step, index) => {
+        let stepDuration = step.duration.value
+        let stepStartLat = step.start_location.lat
+        let stepStartLng = step.start_location.lng
+        while ( duration + stepDuration >= weatherTimeStep &&
+                route.legs[0].duration.value - totalDuration >= weatherTimeStep + 1800 ) {
+          let durationToAdd = weatherTimeStep - duration
+          let ratio = durationToAdd / stepDuration
+          totalDuration += durationToAdd
+          stepDuration -= durationToAdd
+
+          let latitude = (step.end_location.lat - stepStartLat) * ratio + stepStartLat
+          let longitude = (step.end_location.lng - stepStartLng) * ratio + stepStartLng
+          let time = Math.floor(firstTime + totalDuration)
+          dispatch(getWeather(routeIndex, latitude, longitude, time))
+          stepStartLat = latitude
+          stepStartLng = longitude
+          duration = 0
+        }
+        totalDuration += stepDuration
+        duration += stepDuration
+        if(index == lastIndex) {
+          let latitude = step.end_location.lat
+          let longitude = step.end_location.lng
+          dispatch(getWeather(routeIndex, latitude, longitude, firstTime + totalDuration))
+        }
+      })
+    });
+  }
+}
+
+export const oldgetRouteWeather = (routes) => {
   let now = Math.floor(Date.now() / 1000)
   let totalDuration = 0
   let duration = 0
@@ -51,12 +105,18 @@ export const getRouteWeather = (routes) => {
 export const getWeather = (index, latitude, longitude, time) => {
   return async dispatch => {
     try {
-      const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`
-      const weatherPromise = await fetch(url)
-      dispatch(fetchWeatherData())
-      const weatherJson = await weatherPromise.json()
-      const weather = setWeather(index, weatherJson)
-      dispatch(fetchWeatherFulfilled(weather))
+      totalFetch += 1
+      if(totalFetch < maxFetch) {
+        const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`
+        const weatherPromise = await fetch(url)
+        dispatch(fetchWeatherData())
+        const weatherJson = await weatherPromise.json()
+        const weather = setWeather(index, weatherJson)
+        dispatch(fetchWeatherFulfilled(weather))
+      } else [
+        console.log('over total', totalFetch)
+      ]
+
     } catch(error) {
       console.log('Getting Weathers Error-------------------', error)
       dispatch(fetchWeatherRejected(error))
