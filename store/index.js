@@ -1,6 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
 import allReducers from './reducers';
 import thunk from 'redux-thunk';
+import { AsyncStorage } from 'react-native';
+import { persistStore, persistReducer } from 'redux-persist';
 
 const logger = (store) => (next) => (action) => {
   console.log('action fired: ', action)
@@ -17,13 +19,26 @@ const error = (store) => (next) => (action) => {
 
 const middleware = applyMiddleware(error, thunk);
 
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage
+};
+
+const persistedReducer = persistReducer(persistConfig, allReducers)
+
 const store = createStore(
-  allReducers,
+  persistedReducer,
   middleware,
 );
-  
+
+const persistor = persistStore(store)
+
 // store.subscribe(() => {
 //   console.log('store changed: ', store.getState());
 // });
 
-export default store;
+export {
+  store,
+  persistor
+}
+  
