@@ -14,7 +14,6 @@ let maxFetch = 32;
 
 export const getRouteWeather = (routes) => {
   let now = Math.floor(Date.now() / 1000)
-  console.log('now', now)
   let totalDuration = 0
   let duration = 0
   return async dispatch => {
@@ -36,8 +35,11 @@ export const getRouteWeather = (routes) => {
         let stepDuration = step.duration.value
         let stepStartLat = step.start_location.lat
         let stepStartLng = step.start_location.lng
-        while ( duration + stepDuration >= weatherTimeStep &&
-                route.legs[0].duration.value - totalDuration >= weatherTimeStep + 1800 ) {
+        while (
+          (duration + stepDuration) >= weatherTimeStep 
+          && (route.legs[0].duration.value - (totalDuration)) >= (weatherTimeStep * 1.5)
+        ) {
+          console.log('left', (route.legs[0].duration.value - (totalDuration + stepDuration)))
           let durationToAdd = weatherTimeStep - duration
           let ratio = durationToAdd / stepDuration
           totalDuration += durationToAdd
@@ -56,7 +58,7 @@ export const getRouteWeather = (routes) => {
         if(index == lastIndex) {
           let latitude = step.end_location.lat
           let longitude = step.end_location.lng
-          dispatch(getWeather(routeIndex, latitude, longitude, firstTime + totalDuration))
+          dispatch(getWeather(routeIndex, latitude, longitude, now + totalDuration))
         }
       })
     });
