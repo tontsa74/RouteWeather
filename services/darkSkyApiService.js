@@ -16,8 +16,6 @@ let maxFetch = 50;
 export const getRouteWeather = (routes, weather) => {
   totalFetch = 0
   let now = Math.floor(Date.now() / 1000)
-  console.log('now', now)
-  console.log('total weathers', weather.weathers.length)
   let totalDuration = 0
   let duration = 0
   return async dispatch => {
@@ -26,7 +24,7 @@ export const getRouteWeather = (routes, weather) => {
     tempWeathers.forEach((weather) => {
       weather.isVisible = false
       if (weather.time + weatherTimeAccuracy < now) {
-        console.log('remove', weather.time)
+        console.log('remove', weather)
         tempWeathers.splice(weather)
       }
     })
@@ -41,7 +39,6 @@ export const getRouteWeather = (routes, weather) => {
         let longitude = route.legs[0].start_location.lng
         dispatch(getWeather(routeIndex, latitude, longitude, now))
       }
-      let firstTime = new Date((now + 1800) * 1000).setMinutes(0,0,0) / 1000
       
       let lastIndex = route.legs[0].steps.length-1
       route.legs[0].steps.forEach((step, index) => {
@@ -49,8 +46,8 @@ export const getRouteWeather = (routes, weather) => {
         let stepStartLat = step.start_location.lat
         let stepStartLng = step.start_location.lng
         while (
-          (duration + stepDuration) >= weatherTimeStep 
-          && (route.legs[0].duration.value - (totalDuration)) >= (weatherTimeStep * 1)
+          (duration + stepDuration) >= weatherTimeStep
+          // && (route.legs[0].duration.value - (totalDuration)) >= (weatherTimeStep)
         ) {
           let durationToAdd = weatherTimeStep - duration
           let ratio = durationToAdd / stepDuration
@@ -59,7 +56,7 @@ export const getRouteWeather = (routes, weather) => {
 
           let latitude = (step.end_location.lat - stepStartLat) * ratio + stepStartLat
           let longitude = (step.end_location.lng - stepStartLng) * ratio + stepStartLng
-          let time = Math.floor(firstTime + totalDuration)
+          let time = Math.floor(now + totalDuration)
           dispatch(getWeather(routeIndex, latitude, longitude, time))
           stepStartLat = latitude
           stepStartLng = longitude
