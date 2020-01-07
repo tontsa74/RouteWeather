@@ -1,6 +1,5 @@
 import { SET_CURRENT_LOCATION, SET_CURRENT_REJECTED, SET_CURRENT_LOCATION_FULFILLED } from "../types";
 
-
 const initialState = {
   coords: {
     latitude: 60,
@@ -10,6 +9,7 @@ const initialState = {
   },
   loading: false,
   errorMessage: '',
+  onStart: true,
 }
 
 const locationReducer = (state = initialState, action) => {
@@ -18,6 +18,7 @@ const locationReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: action.loading,
+        onStart: false,
       };
     case SET_CURRENT_LOCATION_FULFILLED:
       return {

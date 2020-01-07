@@ -20,7 +20,9 @@ export default function SettingsScreen(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log('SettingsScreen: ', props)
+    if(location.onStart) {
+      dispatch(setCurrentLocation())
+    }
   });
 
   const useGPS = (sender) => {
