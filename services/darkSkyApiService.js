@@ -4,7 +4,8 @@ import { Weather } from "../models/Weather"
 import { Coord } from "../models/Coord";
 
 const weatherTimeStep = 3600;
-const weatherCoordAccuracy = 0.1;
+const weatherLatAccuracy = 0.25;
+const weatherLngAccuracy = 0.5;
 const weatherTimeAccuracy = 900;
 
 let fetchWeather = [];
@@ -17,6 +18,7 @@ export const getRouteWeather = (routes) => {
   let totalDuration = 0
   let duration = 0
   return async dispatch => {
+    fetchWeather = []
     dispatch(weatherDataClear())
     dispatch(fetchWeatherData())
     routes.forEach((route, index) => {
@@ -37,9 +39,8 @@ export const getRouteWeather = (routes) => {
         let stepStartLng = step.start_location.lng
         while (
           (duration + stepDuration) >= weatherTimeStep 
-          && (route.legs[0].duration.value - (totalDuration)) >= (weatherTimeStep * 1.5)
+          // && (route.legs[0].duration.value - (totalDuration)) >= (weatherTimeStep * 1)
         ) {
-          console.log('left', (route.legs[0].duration.value - (totalDuration + stepDuration)))
           let durationToAdd = weatherTimeStep - duration
           let ratio = durationToAdd / stepDuration
           totalDuration += durationToAdd
@@ -107,17 +108,17 @@ export const oldgetRouteWeather = (routes) => {
 export const getWeather = (index, latitude, longitude, time) => {
   return async dispatch => {
     try {
-      totalFetch += 1
-      if(totalFetch < maxFetch) {
+      if(totalFetch < maxFetch && !findWeather(latitude, longitude, time)) {
+        totalFetch += 1
         const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`
         const weatherPromise = await fetch(url)
         dispatch(fetchWeatherData())
         const weatherJson = await weatherPromise.json()
         const weather = setWeather(index, weatherJson)
         dispatch(fetchWeatherFulfilled(weather))
-      } else [
-        console.log('over total', totalFetch)
-      ]
+      } else {
+        console.log('over total or found', totalFetch)
+      }
 
     } catch(error) {
       console.log('Getting Weathers Error-------------------', error)
@@ -140,24 +141,29 @@ const setWeather = (index, weatherJson) => {
 }
 
 const findWeather = (latitude, longitude, time) => {
-  if (fetchWeather.length > 0) {
+  let result = false
+  // if (fetchWeather.length > 0) {
     fetchWeather.forEach(weather => {
     if (
-      +(latitude - weather.coord.latitude) <  weatherCoordAccuracy &&
-      +(longitude - weather.coord.longitude) <  weatherCoordAccuracy &&
-      +(time - weather.time) < weatherTimeAccuracy) {
-        console.log('found')
+      (Math.abs(latitude - weather.coord.latitude) <  weatherLatAccuracy) &&
+      (Math.abs(longitude - weather.coord.longitude) <  weatherLngAccuracy) &&
+      (Math.abs(time - weather.time) < weatherTimeAccuracy)) {
+        result = true
       }
     })
+  // }
+
+  if (!result) {
+    let weather = new Weather(
+      0, 
+      new Coord(
+        latitude, 
+        longitude, 
+      ),
+      time,
+    )
+    fetchWeather.push(weather)
   }
 
-  let weather = new Weather(
-    0, 
-    new Coord(
-      latitude, 
-      longitude, 
-    ),
-    time,
-  )
-  fetchWeather.push(weather)
+  return result
 }

@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    color: 'midnightblue',
+    color: 'blue',
     padding: 20,
   }
 });

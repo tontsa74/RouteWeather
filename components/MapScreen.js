@@ -155,7 +155,7 @@ export default function MapScreen() {
       <Marker 
         key={key} 
         title={time.toLocaleTimeString()}
-        description={icon}
+        description={JSON.stringify(coord)}
         coordinate={coord}
         anchor={anchor}
         image={iconImage}
