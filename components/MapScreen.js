@@ -116,7 +116,9 @@ export default function MapScreen() {
   const getWeather = () => {
     let weathers = []
     fetchWeather.weathers.map((weather, index) => {
-      weathers.push(weatherMarker(index, weather))
+      if (weather.isVisible) {
+        weathers.push(weatherMarker(index, weather))
+      }
     })
     return weathers
   }
@@ -126,13 +128,6 @@ export default function MapScreen() {
     let icon = weather.icon;
     let coord = weather.coord;
     let anchor = { x: 0.5, y: 0.5 }
-
-/*     switch(weather.key) {
-      case 0: { anchor = {x: 0.5, y: 1}; break; }
-      case 1: { anchor = {x: 0, y: 0.5}; break; }
-      case 2: { anchor = {x: 0.5, y: 0}; break; }
-      default: { anchor = {x: 0.5, y: 0.5}; break; }
-    } */
     
     let iconImage
     switch(icon) {
@@ -155,7 +150,7 @@ export default function MapScreen() {
       <Marker 
         key={key} 
         title={time.toLocaleTimeString()}
-        description={JSON.stringify(coord)}
+        description={`${Math.round(weather.temperature * 10) / 10 }, ${weather.summary}`}
         coordinate={coord}
         anchor={anchor}
         image={iconImage}

@@ -8,16 +8,30 @@ const weatherLatAccuracy = 0.25;
 const weatherLngAccuracy = 0.5;
 const weatherTimeAccuracy = 1800;
 
-let tempWeathers = [];
+let tempWeathers;
 
-export const getRouteWeather = (routes) => {
+let totalFetch;
+let maxFetch = 50;
+
+export const getRouteWeather = (routes, weather) => {
+  totalFetch = 0
   let now = Math.floor(Date.now() / 1000)
+  console.log('now', now)
+  console.log('total weathers', weather.weathers.length)
   let totalDuration = 0
   let duration = 0
   return async dispatch => {
-    tempWeathers = []
+    tempWeathers = weather.weathers
     dispatch(weatherDataClear())
+    tempWeathers.forEach((weather) => {
+      weather.isVisible = false
+      if (weather.time + weatherTimeAccuracy < now) {
+        console.log('remove', weather.time)
+        tempWeathers.splice(weather)
+      }
+    })
     dispatch(fetchWeatherData())
+    dispatch(fetchWeatherFulfilled(tempWeathers))
     routes.forEach((route, index) => {
       let routeIndex = index;
       totalDuration = 0
@@ -66,8 +80,9 @@ export const getRouteWeather = (routes) => {
 export const getWeather = (index, latitude, longitude, time) => {
   return async dispatch => {
     try {
-      if(!findWeather(latitude, longitude, time)) {
-        const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}`
+      if(totalFetch < maxFetch && !findWeather(latitude, longitude, time)) {
+        totalFetch += 1
+        const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}?units=auto`
         const weatherPromise = await fetch(url)
         dispatch(fetchWeatherData())
         const weatherJson = await weatherPromise.json()
@@ -90,6 +105,9 @@ const setWeather = (index, weatherJson) => {
     ),
     weatherJson.currently.time, 
     weatherJson.currently.icon,
+    weatherJson.currently.summary,
+    weatherJson.currently.temperature,
+    true,
   )
   return weather
 }
@@ -102,6 +120,7 @@ const findWeather = (latitude, longitude, time) => {
     (Math.abs(longitude - weather.coord.longitude) <  weatherLngAccuracy) &&
     (Math.abs(time - weather.time) < weatherTimeAccuracy)) {
       result = true
+      weather.isVisible = true
     }
   })
 

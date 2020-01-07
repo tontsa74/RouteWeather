@@ -2,7 +2,7 @@ import { fetchData, fetchDataFulfilled, fetchDataRejected, setRouteStart, setRou
 import { apiKey } from '../apiKey';
 import { getRouteWeather } from "./darkSkyApiService";
 
-export const getRouteLocations = (start, destination) => {
+export const getRouteLocations = (start, destination, weather) => {
   return async dispatch => {
     try {
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${destination}&key=${apiKey}&alternatives=true`;
@@ -10,7 +10,7 @@ export const getRouteLocations = (start, destination) => {
       dispatch(fetchData());
       const directionsJson = await directionsPromise.json();
       dispatch(fetchDataFulfilled(directionsJson.routes))
-      dispatch(getRouteWeather(directionsJson.routes))
+      dispatch(getRouteWeather(directionsJson.routes, weather))
       const mapRegion = setRegion(directionsJson.routes)
       dispatch(setMapRegion(mapRegion))
     } catch(error) {

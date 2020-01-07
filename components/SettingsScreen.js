@@ -33,7 +33,7 @@ export default function SettingsScreen(props) {
 
   const navigate = () => {
     // console.log('navigate', props)
-    dispatch(getRouteLocations(routeStart, routeDestination))
+    dispatch(getRouteLocations(routeStart, routeDestination, weather))
     props.navigation.navigate('Map')
   }
 
