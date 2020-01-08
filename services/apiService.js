@@ -10,7 +10,7 @@ export const getRouteLocations = (start, destination, weather) => {
       dispatch(fetchData());
       const directionsJson = await directionsPromise.json();
       dispatch(fetchDataFulfilled(directionsJson.routes))
-      dispatch(getRouteWeather(directionsJson.routes, weather))
+      dispatch(getRouteWeather(directionsJson.routes, weather, Date.now() / 1000))
       const mapRegion = setRegion(directionsJson.routes)
       dispatch(setMapRegion(mapRegion))
     } catch(error) {

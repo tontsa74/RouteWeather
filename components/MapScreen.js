@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Dimensions, View, TouchableOpacity, Text, Slider } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { setCurrentLocation } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import { Coord } from '../models/Coord';
+import { getRouteWeather } from '../services/darkSkyApiService';
 
 const IconComponent = Ionicons;
 const icon_default = require('../assets/icon.png')
@@ -22,6 +23,9 @@ const icon_thunder = require('../assets/icons/thunder.png')
 const icon_tornado = require('../assets/icons/tornado.png')
 const icon_wind = require('../assets/icons/wind.png')
 
+const height = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
+
 export default function MapScreen() {
 
   const currentLocation = useSelector(state => state.currentLocation);
@@ -35,13 +39,6 @@ export default function MapScreen() {
     // console.log('MapScreen: ')
   });
   
-  // const region = {
-  //   latitude: currentLocation.coords.latitude,
-  //   longitude: currentLocation.coords.longitude,
-  //   latitudeDelta: 10,
-  //   longitudeDelta: 10,
-  // }
-
   const getRouteTexts = () => {
     let texts = []
     fetchRoute.routes.map((route, index) => {
@@ -189,6 +186,26 @@ export default function MapScreen() {
       </TouchableOpacity>
 
       <View style={styles.routes}>{getRouteTexts()}</View>
+
+      <Slider
+          minimumValue={0}
+          maximumValue={8}
+          minimumTrackTintColor="#1EB1FC"
+          maximumTractTintColor="#1EB1FC"
+          step={1}
+          value={0}
+          onValueChange={value => {
+            let startTime = (Date.now() / 1000) + (value * 3600)
+            console.log(startTime)
+          } }
+          onSlidingComplete={value => {
+            let startTime = (Date.now() / 1000) + (value * 3600)
+            console.log(value)
+            dispatch(getRouteWeather(fetchRoute.routes, fetchWeather, startTime))
+          } }
+          style={styles.slider}
+          thumbTintColor="#1EB1FC"
+        />
     </View>
   );
 }
@@ -209,6 +226,22 @@ const styles = StyleSheet.create({
     position:'absolute',
     top: 50,
     right: 25,
+  },
+  timeButton: {
+    position:'absolute',
+    top: 50,
+    right: 75,
+  },
+  slider: {
+    position: 'absolute',
+    bottom: 25,
+    // marginTop: height * 0.57,
+    height: 50,
+    width: width * 0.8,
+    // transform: [{ rotateZ: '-90deg' }],
+    // marginLeft: 125,
+    // backgroundColor: 'yellow',
+    backgroundColor: '#88888844',
   },
   routes: {
     position: 'absolute',

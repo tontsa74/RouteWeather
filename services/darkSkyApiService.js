@@ -14,12 +14,12 @@ let now;
 let totalFetch;
 let maxFetch = 50;
 
-export const getRouteWeather = (routes, weathers) => {
+export const getRouteWeather = (routes, weathers, startTime) => {
   return async dispatch => {
     console.log('weathers', weathers.weathers.length)
     totalFetch = 0
     now = Math.floor(Date.now() / 1000)
-    let firstTime = now // new Date((now + 1800) * 1000).setMinutes(0,0,0) / 1000
+    let firstTime = Math.floor(startTime) // new Date((now + 1800) * 1000).setMinutes(0,0,0) / 1000
     tempWeathers = []
     weathers.weathers.forEach(weather => {
       if(weather.time + weatherTimeAccuracy > now) {
