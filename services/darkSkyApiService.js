@@ -10,12 +10,13 @@ const weatherTimeAccuracy = 1800;
 
 let tempWeathers;
 
+let now;
 let totalFetch;
 let maxFetch = 50;
 
 export const getRouteWeather = (routes, weather) => {
   totalFetch = 0
-  let now = Math.floor(Date.now() / 1000)
+  now = Math.floor(Date.now() / 1000)
   let totalDuration = 0
   let duration = 0
   return async dispatch => {
@@ -79,12 +80,14 @@ export const getWeather = (index, latitude, longitude, time) => {
     try {
       if(totalFetch < maxFetch && !findWeather(latitude, longitude, time)) {
         totalFetch += 1
+        console.log('totalFetch', totalFetch)
         const url = `https://api.darksky.net/forecast/${darkSkyApiKey}/${latitude},${longitude},${time}?units=auto`
         const weatherPromise = await fetch(url)
         dispatch(fetchWeatherData())
         const weatherJson = await weatherPromise.json()
         const weather = setWeather(index, weatherJson)
         dispatch(fetchWeatherFulfilled(weather))
+        console.log('tempWeathers', tempWeathers.length)
       } 
     } catch(error) {
       console.log('Getting Weathers Error-------------------', error)
@@ -94,19 +97,34 @@ export const getWeather = (index, latitude, longitude, time) => {
 }
 
 const setWeather = (index, weatherJson) => {
+  let weathers = []
+  let coord = new Coord( weatherJson.latitude, weatherJson.longitude, )
   let weather = new Weather(
     index, 
-    new Coord(
-      weatherJson.latitude, 
-      weatherJson.longitude, 
-    ),
+    coord,
     weatherJson.currently.time, 
     weatherJson.currently.icon,
     weatherJson.currently.summary,
     weatherJson.currently.temperature,
     true,
   )
-  return weather
+  weathers.push(weather)
+  weatherJson.hourly.data.forEach((hour) => {
+    if (hour.time + weatherTimeAccuracy > now) {
+      let weather = new Weather(
+        index, 
+        coord,
+        hour.time, 
+        hour.icon,
+        hour.summary,
+        hour.temperature,
+        false,
+      )
+      weathers.push(weather)
+    }
+
+  })
+  return weathers
 }
 
 const findWeather = (latitude, longitude, time) => {

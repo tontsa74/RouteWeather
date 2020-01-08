@@ -201,8 +201,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    // width: Dimensions.get('window').width,
+    // height: Dimensions.get('window').height,
+    ...StyleSheet.absoluteFillObject,
   },
   gpsButton: {
     position:'absolute',
