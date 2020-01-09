@@ -7,6 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Coord } from '../models/Coord';
 import { getRouteWeather } from '../services/darkSkyApiService';
 
+const height = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
+
 const IconComponent = Ionicons;
 const icon_default = require('../assets/icon.png')
 const icon_cloudy = require('../assets/icons/cloudy.png')
@@ -23,10 +26,7 @@ const icon_thunder = require('../assets/icons/thunder.png')
 const icon_tornado = require('../assets/icons/tornado.png')
 const icon_wind = require('../assets/icons/wind.png')
 
-const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
-
-export default function MapScreen() {
+export default function MapScreen(props) {
 
   const currentLocation = useSelector(state => state.currentLocation);
   const fetchRoute = useSelector(state => state.fetchRoute);
@@ -35,8 +35,10 @@ export default function MapScreen() {
   
   const dispatch = useDispatch();
 
+  const [startTime, setStartTime] = useState(0)
+
   useEffect(() => {
-    // console.log('MapScreen: ')
+    // console.log('MapScreen: ', props.navigation)
   });
   
   const getRouteTexts = () => {
@@ -187,25 +189,24 @@ export default function MapScreen() {
 
       <View style={styles.routes}>{getRouteTexts()}</View>
 
-      <Slider
+      <View style={styles.sliderView}>
+        <Slider style={styles.slider}
           minimumValue={0}
-          maximumValue={8}
+          maximumValue={12}
           minimumTrackTintColor="#1EB1FC"
           maximumTractTintColor="#1EB1FC"
           step={1}
           value={0}
           onValueChange={value => {
-            let startTime = (Date.now() / 1000) + (value * 3600)
+            let newTime = Math.floor((Date.now() / 1000) + (value * 3600))
+            setStartTime(value)
             console.log(startTime)
+            dispatch(getRouteWeather(fetchRoute.routes, fetchWeather, newTime))
           } }
-          onSlidingComplete={value => {
-            let startTime = (Date.now() / 1000) + (value * 3600)
-            console.log(value)
-            dispatch(getRouteWeather(fetchRoute.routes, fetchWeather, startTime))
-          } }
-          style={styles.slider}
           thumbTintColor="#1EB1FC"
         />
+        <Text style={styles.sliderText}>Start time: +{startTime} h</Text>
+      </View>
     </View>
   );
 }
@@ -232,16 +233,37 @@ const styles = StyleSheet.create({
     top: 50,
     right: 75,
   },
-  slider: {
+  sliderView: {
     position: 'absolute',
-    bottom: 25,
+    justifyContent: 'flex-end',
+    bottom: 5,
     // marginTop: height * 0.57,
     height: 50,
-    width: width * 0.8,
+    width: width * 0.95,
     // transform: [{ rotateZ: '-90deg' }],
     // marginLeft: 125,
     // backgroundColor: 'yellow',
+    // backgroundColor: '#88888844',
+  },
+  slider: {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 20,
+    // marginTop: height * 0.57,
+    height: 50,
+    width: width * 0.9,
+    // transform: [{ rotateZ: '-90deg' }],
+    // marginLeft: 125,
+    // backgroundColor: 'yellow',
+    // backgroundColor: '#88888844',
+  },
+  sliderText: {
+    position: 'absolute',
+    alignSelf: 'center',
     backgroundColor: '#88888844',
+    padding: 5,
+    // padding: 5,
+    fontSize: 20,
   },
   routes: {
     position: 'absolute',
@@ -249,5 +271,5 @@ const styles = StyleSheet.create({
     left: 10,
     backgroundColor: '#88888844',
     padding: 5,
-  }
+  },
 });

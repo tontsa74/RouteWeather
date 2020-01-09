@@ -87,7 +87,6 @@ export const getWeather = (index, latitude, longitude, time) => {
   return async dispatch => {
     try {
       let isFound = findWeather(latitude, longitude, time)
-      console.log('totalFetch', totalFetch)
       if(totalFetch < maxFetch && !isFound) {
         totalFetch += 1
         console.log('totalFetch', totalFetch)
@@ -147,7 +146,6 @@ const findWeather = (latitude, longitude, time) => {
     (Math.abs(time - weather.time) < weatherTimeAccuracy)) {
       result = true
       weather.isVisible = true
-      console.log(`found`)
     }
   })
 

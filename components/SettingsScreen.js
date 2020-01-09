@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Linking } from 'react-native';
 // import Constants from 'expo-constants';
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
@@ -33,12 +33,23 @@ export default function SettingsScreen(props) {
 
   const navigate = () => {
     // console.log('navigate', props)
-    dispatch(getRouteLocations(routeStart, routeDestination, weather))
+    let startTime = Date.now() / 1000
+    dispatch(getRouteLocations(routeStart, routeDestination, weather, startTime))
     props.navigation.navigate('Map')
   }
 
   return (
     <View style={styles.container}>
+      
+      <TouchableOpacity
+        onPress={() => Linking.openURL('https://darksky.net/poweredby/')}
+        >
+          <Text 
+            style={styles.darkSky}
+          >
+            Powered by Dark Sky
+          </Text>
+      </TouchableOpacity>
       <View style={styles.locationContainer}>
         <TextInput
         style={styles.textInput}
@@ -88,33 +99,8 @@ export default function SettingsScreen(props) {
             Navigate
           </Text>
       </TouchableOpacity>
-      
-      <Text>
-        {JSON.stringify(location)}
-      </Text>
-      <Text>
-        {`
-        error: ${route.errorMessage}
-        loading: ${route.loading}`}
-      </Text>
-      
-      <ScrollView>
-        <Text>
-          {JSON.stringify(route)}
-        </Text>
-      </ScrollView>
-      
-      <Text>
-        {`
-        error: ${weather.errorMessage}
-        loading: ${weather.loading}`}
-      </Text>
-      
-      <ScrollView>
-        <Text>
-          {JSON.stringify(weather)}
-        </Text>
-      </ScrollView>
+
+
     </View>
   );
 }
@@ -150,5 +136,10 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 20,
     alignSelf: 'center',
-  }
+  },
+  darkSky: {
+    alignSelf: 'flex-end',
+    color: 'blue',
+    padding: 10,
+  },
 });
