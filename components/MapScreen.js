@@ -28,19 +28,30 @@ const icon_wind = require('../assets/icons/wind.png')
 
 export default function MapScreen(props) {
 
+  // current GPS location
   const currentLocation = useSelector(state => state.currentLocation);
+
+  // route points
   const fetchRoute = useSelector(state => state.fetchRoute);
+
+  // weather datas
   const fetchWeather = useSelector(state => state.fetchWeather);
+
+  // map region to display
   const mapRegion = useSelector(state => state.mapRegion);
   
-  const dispatch = useDispatch();
-
+  // start time slider value
   const [startTime, setStartTime] = useState(0)
 
+  // dispatch to redux store
+  const dispatch = useDispatch();
+
+  // useEffect is called when component loads or updates
   useEffect(() => {
     // console.log('MapScreen: ', props.navigation)
   });
   
+  // return summary info of all routes
   const getRouteTexts = () => {
     let texts = []
     fetchRoute.routes.map((route, index) => {
@@ -49,6 +60,7 @@ export default function MapScreen(props) {
     return texts
   }
 
+  // return route summary text info
   const getRouteText = (key, route) => {
     let color
     switch(key) {
@@ -67,6 +79,7 @@ export default function MapScreen(props) {
     )
   }
 
+  // return all routes polylines
   const getAllRoutes = () => {
     let routes = []
     fetchRoute.routes.map((route, index) => {
@@ -75,6 +88,7 @@ export default function MapScreen(props) {
     return routes
   }
   
+  // return route polyline
   const getRoutePolylines = (key, steps) => {
     let coords = [];
     steps.map((step, index) => {
@@ -94,6 +108,7 @@ export default function MapScreen(props) {
     return routePolyline(key, coords)
   }
 
+  // return polyline of given coords
   const routePolyline = (key, coords) => {
     let color
     switch(key) {
@@ -112,6 +127,7 @@ export default function MapScreen(props) {
     )
   }
 
+  // return weather markers along all routes
   const getWeather = () => {
     let weathers = []
     fetchWeather.weathers.map((weather, index) => {
@@ -122,6 +138,7 @@ export default function MapScreen(props) {
     return weathers
   }
 
+  // return marker with weather data
   const weatherMarker = (key, weather) => {
     let time = new Date(weather.time*1000);
     let icon = weather.icon;
@@ -161,15 +178,15 @@ export default function MapScreen(props) {
   return (
     <View style={styles.container}>
       <MapView 
-        // provider={MapView.PROVIDER_GOOGLE}
+        // provider={MapView.PROVIDER_GOOGLE}   // to use google maps in ios
         style ={styles.mapStyle}
         region={mapRegion.region}
       >
       <Marker
-      coordinate={{
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      }}>
+        coordinate={{
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+        }}>
         <IconComponent name={'md-radio-button-off'} size={25} color={'blue'} />
       </Marker>
       {getWeather()}
@@ -237,32 +254,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'flex-end',
     bottom: 5,
-    // marginTop: height * 0.57,
     height: 50,
     width: width * 0.95,
-    // transform: [{ rotateZ: '-90deg' }],
-    // marginLeft: 125,
-    // backgroundColor: 'yellow',
-    // backgroundColor: '#88888844',
   },
   slider: {
     position: 'absolute',
     alignSelf: 'center',
     bottom: 20,
-    // marginTop: height * 0.57,
     height: 50,
     width: width * 0.9,
-    // transform: [{ rotateZ: '-90deg' }],
-    // marginLeft: 125,
-    // backgroundColor: 'yellow',
-    // backgroundColor: '#88888844',
   },
   sliderText: {
     position: 'absolute',
     alignSelf: 'center',
     backgroundColor: '#88888844',
     padding: 5,
-    // padding: 5,
     fontSize: 20,
   },
   routes: {

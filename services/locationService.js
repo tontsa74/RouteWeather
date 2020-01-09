@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
+// return device current GPS location
 export const fetchLocation = async () => {
   let location;
 

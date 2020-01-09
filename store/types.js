@@ -1,5 +1,5 @@
-
 //Define of action types 
+
 //Initiate the api call
 export const GET_LOCATIONS = 'GET_LOCATIONS';
 //Gets the locations on api call is fullfilled

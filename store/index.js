@@ -4,11 +4,13 @@ import thunk from 'redux-thunk';
 import { AsyncStorage } from 'react-native';
 import { persistStore, persistReducer } from 'redux-persist';
 
+// logger to display all dispatch actions to redux store
 const logger = (store) => (next) => (action) => {
   console.log('action fired: ', action)
   next(action);
 }
 
+// display all dispatch errors to console
 const error = (store) => (next) => (action) => {
   try {
     next(action);
@@ -17,8 +19,10 @@ const error = (store) => (next) => (action) => {
   }
 }
 
+// add middleware to redux store here
 const middleware = applyMiddleware(error, thunk);
 
+// persist add ability to save redux store data to file
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage
@@ -26,6 +30,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, allReducers)
 
+// redux store works bit like global state
 const store = createStore(
   persistedReducer,
   middleware,

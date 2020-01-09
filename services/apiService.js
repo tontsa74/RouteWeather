@@ -2,6 +2,7 @@ import { fetchData, fetchDataFulfilled, fetchDataRejected, setRouteStart, setRou
 import { apiKey } from '../apiKey';
 import { getRouteWeather } from "./darkSkyApiService";
 
+// fetch route points to store and start weather fetching
 export const getRouteLocations = (start, destination, weather, startTime) => {
   return async dispatch => {
     try {
@@ -10,6 +11,7 @@ export const getRouteLocations = (start, destination, weather, startTime) => {
       dispatch(fetchData());
       const directionsJson = await directionsPromise.json();
       dispatch(fetchDataFulfilled(directionsJson.routes))
+      // get weathers along routes with darkSkyApiService
       dispatch(getRouteWeather(directionsJson.routes, weather, startTime))
       const mapRegion = setRegion(directionsJson.routes)
       dispatch(setMapRegion(mapRegion))
@@ -20,8 +22,8 @@ export const getRouteLocations = (start, destination, weather, startTime) => {
   }
 }
 
+// return region of all routes bounds
 const setRegion = (routes) => {
-  // console.log('setMapRegion', routes)
   let maxLat, minLat, maxLng, minLng
   routes.forEach((route, index) => {
     if (maxLat < route.bounds.northeast.lat || index == 0) {
@@ -50,6 +52,7 @@ const setRegion = (routes) => {
   return region
 }
 
+// fetch address to store address of coords
 export const geoCode = (sender, latitude, longitude) => {
   return async dispatch => {
     try {

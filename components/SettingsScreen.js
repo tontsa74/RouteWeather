@@ -1,38 +1,35 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Linking } from 'react-native';
-// import Constants from 'expo-constants';
 import { setCurrentLocation, setRouteStart, setRouteDestination } from '../store/actions/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import { getRouteLocations, geoCode } from '../services/apiService';
 import { Ionicons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const IconComponent = Ionicons;
-
 
 export default function SettingsScreen(props) {
   const routeStart = useSelector(state => state.routeStart);
   const routeDestination = useSelector(state => state.routeDestination);
   const location = useSelector(state => state.currentLocation);
-  const route = useSelector(state => state.fetchRoute)
-  const weather = useSelector(state => state.fetchWeather)
+  const weather = useSelector(state => state.fetchWeather);
   
   const dispatch = useDispatch();
 
+  // useEffect is called when component loads or updates
   useEffect(() => {
     if(location.onStart) {
       dispatch(setCurrentLocation())
     }
   });
 
+  // set address from current gps location
   const useGPS = (sender) => {
-    // console.log('useGPS')
     dispatch(setCurrentLocation())
     dispatch(geoCode(sender, location.coords.latitude, location.coords.longitude))
   }
 
+  // navigate sets route and opens map screen
   const navigate = () => {
-    // console.log('navigate', props)
     let startTime = Date.now() / 1000
     dispatch(getRouteLocations(routeStart, routeDestination, weather, startTime))
     props.navigation.navigate('Map')
@@ -40,51 +37,22 @@ export default function SettingsScreen(props) {
 
   return (
     <View style={styles.container}>
-      
-      <TouchableOpacity
-        onPress={() => Linking.openURL('https://darksky.net/poweredby/')}
-        >
-          <Text 
-            style={styles.darkSky}
-          >
-            Powered by Dark Sky
-          </Text>
+      <TouchableOpacity onPress={() => Linking.openURL('https://darksky.net/poweredby/')}>
+        <Text style={styles.darkSky}>
+          Powered by Dark Sky
+        </Text>
       </TouchableOpacity>
-      <View style={styles.locationContainer}>
-        <TextInput
-        style={styles.textInput}
-        placeholder="Start location"
-        onChangeText={(start) => {
-          dispatch(setRouteStart(start))
-        }}
-        value={routeStart}
-      />
-      <TouchableOpacity
-        onPress={() => useGPS('start')}
-        >
-        <IconComponent 
-        style={styles.gpsButton}
-          name={'md-locate'} 
-          size={40} 
-          color={'blue'} 
-        />
-      </TouchableOpacity>
-      </View>
 
       <View style={styles.locationContainer}>
         <TextInput
           style={styles.textInput}
-          placeholder="Destination location"
-          onChangeText={(destination) => {
-            dispatch(setRouteDestination(destination))
-          }}
-          value={routeDestination}
+          placeholder="Start location"
+          onChangeText={(start) => { dispatch(setRouteStart(start)) }}
+          value={routeStart}
         />
-        <TouchableOpacity
-          onPress={() => useGPS('destination')}
-          >
+        <TouchableOpacity onPress={() => useGPS('start')}>
           <IconComponent 
-          style={styles.gpsButton}
+            style={styles.gpsButton}
             name={'md-locate'} 
             size={40} 
             color={'blue'} 
@@ -92,15 +60,28 @@ export default function SettingsScreen(props) {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        onPress={() => navigate()}
-        >
+      <View style={styles.locationContainer}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Destination location"
+          onChangeText={(destination) => { dispatch(setRouteDestination(destination)) }}
+          value={routeDestination}
+        />
+        <TouchableOpacity onPress={() => useGPS('destination')}>
+          <IconComponent 
+            style={styles.gpsButton}
+            name={'md-locate'} 
+            size={40} 
+            color={'blue'} 
+          />
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity onPress={() => navigate()}>
           <Text style={styles.navigateButton}>
             Navigate
           </Text>
       </TouchableOpacity>
-
-
     </View>
   );
 }
@@ -112,7 +93,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'flex-start',
     margin: 24,
-    // marginTop: Constants.statusBarHeight,
   },
   locationContainer: {
     flexDirection: 'row',
