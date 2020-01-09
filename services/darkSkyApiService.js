@@ -70,7 +70,7 @@ export const getRouteWeather = (routes, weathers, startTime) => {
         while (
           (durationCounter + stepDuration) >= weatherTimeStep
           // leave space to last route destination weather
-          && (route.legs[0].duration.value - (totalDuration + weatherTimeStep)) > (weatherTimeStep)
+          && (route.legs[0].duration.value - (totalDuration)) > (weatherTimeStep)
         ) {
           // duration needed to reach weather time step
           let durationToAdd = weatherTimeStep - durationCounter
