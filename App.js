@@ -4,7 +4,7 @@ import AppNavigator from './AppNavigator';
 import { store, persistor } from './store';
 import Constants from 'expo-constants';
 import { PersistGate } from 'redux-persist/integration/react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
 
 export default function App() {
   console.log(Constants.manifest.name);
@@ -24,7 +24,11 @@ const renderLoading = () => {
   return (
       <View style={styles.container}>
           <Text style={styles.title}>Route Weather</Text>
-          <ActivityIndicator size={"large"} />
+          <ActivityIndicator style={{padding: 20,}} size={"large"} />
+          <Image
+            style={{ width: 250, height: 250, }}
+            source={require('./assets/RWicon.png')}
+          />
       </View>
   );
 };
