@@ -217,7 +217,6 @@ export default function MapScreen(props) {
           onValueChange={value => {
             let newTime = Math.floor((Date.now() / 1000) + (value * 3600))
             setStartTime(value)
-            console.log(startTime)
             dispatch(getRouteWeather(fetchRoute.routes, fetchWeather, newTime))
           } }
           thumbTintColor="#1EB1FC"

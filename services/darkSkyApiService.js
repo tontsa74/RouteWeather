@@ -24,7 +24,6 @@ let maxFetch = 50;
 // fetch and store all weather along all routes
 export const getRouteWeather = (routes, weathers, startTime) => {
   return async dispatch => {
-    console.log('weathers', weathers.weathers.length)
     totalFetch = 0
     now = Math.floor(Date.now() / 1000)
     let firstTime = Math.floor(startTime) // new Date((now + 1800) * 1000).setMinutes(0,0,0) / 1000
@@ -71,7 +70,7 @@ export const getRouteWeather = (routes, weathers, startTime) => {
         while (
           (durationCounter + stepDuration) >= weatherTimeStep
           // leave space to last route destination weather
-          && (route.legs[0].duration.value - (totalDuration)) > (weatherTimeStep * 1.1)
+          && (route.legs[0].duration.value - (totalDuration + weatherTimeStep)) > (weatherTimeStep)
         ) {
           // duration needed to reach weather time step
           let durationToAdd = weatherTimeStep - durationCounter
