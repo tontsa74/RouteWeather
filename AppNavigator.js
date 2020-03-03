@@ -4,6 +4,8 @@ import MapScreen from './components/MapScreen';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { View } from 'react-native';
+import ErrorMessage from './components/ErrorMessage';
 
 
 const TabBarComponent = props => <BottomTabBar {...props} />;
@@ -36,10 +38,13 @@ const TabNavigator = createBottomTabNavigator({
     },
   },
   tabBarComponent: props => (
-    <TabBarComponent {...props} style={{ 
-      borderTopColor: '#605F60', 
-      backgroundColor: '#eeeeee',
-    }} />
+    <View>
+      <ErrorMessage/>
+      <TabBarComponent {...props} style={{ 
+        borderTopColor: '#605F60', 
+        backgroundColor: '#eeeeee',
+      }} />
+    </View>
   ),
 });
 

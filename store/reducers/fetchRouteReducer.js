@@ -18,7 +18,6 @@ const fetchRouteReducer = (state = initialState, action) => {
         ...state,
         routes: action.payload,
         loading: action.loading,
-        errorMessage: '',
       };
     case GET_LOCATIONS_REJECTED:
       return {
