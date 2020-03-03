@@ -116,6 +116,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 20,
     alignSelf: 'center',
+    backgroundColor: '#fafafa',
+    borderRadius: 20,
+    borderWidth: 1,
   },
   darkSky: {
     alignSelf: 'flex-end',
