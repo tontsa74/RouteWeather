@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
 
-export default function Loading() {
+export default function Loading(props) {
   return (
       <View style={styles.container}>
           <Text style={styles.title}>Route Weather</Text>
-          <ActivityIndicator style={{padding: 20,}} size={"large"} />
+          {props.loading && <ActivityIndicator style={{padding: 20,}} size={"large"} />}
           <Image
             style={{ width: 250, height: 250, }}
             source={require('../assets/RWicon.png')}
